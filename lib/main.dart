@@ -1,7 +1,24 @@
+import 'package:dnsc_locker/core/routes/app_routes.dart';
+import 'package:dnsc_locker/core/services/service_locator.dart';
+import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load ENV file
+  await dotenv.load(fileName: ".env");
+
+  setupLocator();
+
+  runApp(
+    MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => locator<AuthCubit>())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -10,12 +27,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return MaterialApp.router(
+      title: 'DNSC LRMS',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-      home: const Text('Flutter Demo Home Page'),
+      routerConfig: router, // Access router in the application
     );
   }
 }
