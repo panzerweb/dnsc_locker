@@ -5,7 +5,21 @@ class RegisterUseCase {
 
   RegisterUseCase({required this.authRepo});
 
-  Future<bool> call(String username, String password) async {
-    return await authRepo.register(username, password);
+  Future<bool> call(
+    String username,
+    String password,
+    String email,
+    String? firstName,
+    String? lastName,
+    int instituteId,
+  ) async {
+    return await authRepo.register(
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+      instituteId,
+    );
   }
 }

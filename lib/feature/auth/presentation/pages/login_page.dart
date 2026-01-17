@@ -1,3 +1,7 @@
+import 'package:dnsc_locker/feature/auth/presentation/widgets/auth_button.dart';
+import 'package:dnsc_locker/feature/auth/presentation/widgets/auth_text_field.dart';
+import 'package:dnsc_locker/feature/auth/presentation/widgets/bottom_wave_painter.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -36,98 +40,117 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            context.go('/dashboard');
-          } else if (state is AuthError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
-          }
-        },
-        builder: (context, state) {
-          return Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.lock_outline,
-                      size: 72,
-                      color: Colors.green,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-
-                    /// Username
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Username',
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Username is required'
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-
-                    /// Password
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) => value == null || value.length < 6
-                          ? 'Password must be at least 6 characters'
-                          : null,
-                    ),
-                    const SizedBox(height: 24),
-
-                    /// Login Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton(
-                        onPressed: state is AuthLoading
-                            ? null
-                            : _onLoginPressed,
-                        child: state is AuthLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text('Login'),
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    /// Register navigation
-                    TextButton(
-                      onPressed: () {
-                        context.go('/register');
-                      },
-                      child: const Text('Create an account'),
-                    ),
-                  ],
-                ),
-              ),
+      body: Stack(
+        children: [
+          // Bottom wave background
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.35,
+              width: double.infinity,
+              child: CustomPaint(painter: BottomWavePainter()),
             ),
-          );
-        },
+          ),
+
+          // Main Content for Login
+          BlocConsumer<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is AuthAuthenticated) {
+                context.go('/dashboard');
+              } else if (state is AuthError) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.message)));
+              }
+            },
+            builder: (context, state) {
+              return Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          spacing: 12,
+                          children: [
+                            Icon(Icons.school, size: 32, color: Colors.green),
+                            Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 32),
+
+                        /// Username
+                        AuthTextField(
+                          fieldController: _usernameController,
+                          label: 'Username',
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Username is required'
+                              : null,
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        /// Password
+                        AuthTextField(
+                          fieldController: _passwordController,
+                          label: 'Password',
+                          hideText: true,
+                          validator: (value) =>
+                              value == null || value.length <= 6
+                              ? 'Password must be at least 6 characters'
+                              : null,
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        /// Login Button
+                        AuthButton(
+                          onSubmitButton: state is AuthLoading
+                              ? null
+                              : _onLoginPressed,
+                          stateOnSubmit: state is AuthLoading
+                              ? CircularProgressIndicator(
+                                  color: Colors.green[900],
+                                )
+                              : Text("Login"),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        /// Register navigation
+                        RichText(
+                          text: TextSpan(
+                            text: "Don't have an account? ",
+                            style: TextStyle(color: Colors.grey[600]),
+                            children: [
+                              TextSpan(
+                                text: "Create one",
+                                style: TextStyle(color: Colors.green[500]),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    context.go('/register');
+                                  },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:dnsc_locker/feature/auth/data/data_source/auth_remote_datasource
 import 'package:dnsc_locker/feature/auth/data/data_source/auth_remote_datasourceimpl.dart';
 import 'package:dnsc_locker/feature/auth/data/repository/auth_repositoryimpl.dart';
 import 'package:dnsc_locker/feature/auth/domain/repo/auth_repository.dart';
+import 'package:dnsc_locker/feature/auth/domain/usecases/current_user_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/login_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/logout_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/register_use_case.dart';
@@ -16,6 +17,7 @@ final GetIt locator = GetIt.instance;
 final API_URL = 'http://127.0.0.1:8000/';
 
 void setupLocator() {
+  // Injecting DIO dependency
   locator.registerLazySingleton<Dio>(() {
     final dio = Dio(BaseOptions(baseUrl: API_URL));
     // api_URL can be your servers URL e.g: 'http://localhost:7087/api/'
@@ -34,7 +36,13 @@ void setupLocator() {
     return dio;
   });
 
-  // Authentication
+  /*
+    Auth Registry:
+
+    Registered services, data sources, repositories, use cases, and cubits
+    for Authentication feature.
+
+  */
   locator.registerLazySingleton<FlutterSecureStorage>(
     () => FlutterSecureStorage(),
   );
@@ -59,11 +67,20 @@ void setupLocator() {
   );
   locator.registerLazySingleton(() => LogoutUseCase(locator<AuthRepository>()));
 
+  locator.registerLazySingleton(
+    () => CurrentUserUseCase(authRepo: locator<AuthRepository>()),
+  );
+
   locator.registerFactory(
     () => AuthCubit(
       loginUseCase: locator(),
       registerUseCase: locator(),
       logoutUseCase: locator(),
+      currentUser: locator(),
     ),
   );
+
+  /*
+    [Other feature registry below]
+  */
 }

@@ -14,10 +14,14 @@ final GoRouter router = GoRouter(
     final tokenService = locator<TokenService>();
     final isLoggedIn = await tokenService.getToken() != null;
 
-    if (!isLoggedIn) {
-      return '/login';
+    final isAuthRoute =
+        state.matchedLocation == '/login' ||
+        state.matchedLocation == '/register';
+
+    if (!isLoggedIn && state.matchedLocation == '/dashboard') {
+      return '/';
     }
-    if (isLoggedIn) {
+    if (isLoggedIn && isAuthRoute) {
       return '/dashboard';
     }
 
