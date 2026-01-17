@@ -1,5 +1,12 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/*
+  Token handling services
+
+  Handles different token management services within
+  the entire application
+*/
+
 class TokenService {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 

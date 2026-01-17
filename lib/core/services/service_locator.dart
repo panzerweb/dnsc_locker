@@ -14,10 +14,16 @@ import 'package:get_it/get_it.dart';
 
 final GetIt locator = GetIt.instance;
 
+// Recommended to load API url directly from .env itself
 final API_URL = 'http://127.0.0.1:8000/';
 
 void setupLocator() {
-  // Injecting DIO dependency
+  /* 
+    Injecting DIO dependency, injects the token once to all
+    instance. 
+
+    Helpful to not call locator<TokenService>().getToken(); everytime.
+  */
   locator.registerLazySingleton<Dio>(() {
     final dio = Dio(BaseOptions(baseUrl: API_URL));
     // api_URL can be your servers URL e.g: 'http://localhost:7087/api/'

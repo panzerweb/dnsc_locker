@@ -1,8 +1,20 @@
+import 'package:dnsc_locker/core/services/service_locator.dart';
+import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Future<String?> isTokenExisting() async {
+    final token = await locator<TokenService>().getToken();
+    return token;
+  }
 
   @override
   Widget build(BuildContext context) {

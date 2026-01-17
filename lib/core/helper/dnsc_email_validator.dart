@@ -1,3 +1,8 @@
+/*
+  Helper for validating email inputs
+
+  Only accepts @dnsc.edu.ph emails
+*/
 class DnscEmailValidator {
   static String? dnscEmailValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
