@@ -1,4 +1,5 @@
 import 'package:dnsc_locker/core/components/main_appbar.dart';
+import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/active_indicator_row.dart';
@@ -7,6 +8,7 @@ import 'package:dnsc_locker/feature/lockers/presentation/widgets/header_section.
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/related_detail_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -96,16 +98,22 @@ class _DashboardPageState extends State<DashboardPage> {
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                     childAspectRatio: 1.6,
-                    children: const [
+                    children: [
                       RelatedDetailCard(
                         icon: Icons.attach_money,
                         label: 'Rent Fee',
                         data: '30.00',
+                        backgroundColorPalette: Palette.accentColor,
+                        onTapped: null,
                       ),
                       RelatedDetailCard(
-                        icon: Icons.school_rounded,
-                        label: 'A.Y. 2025 - 2026',
-                        data: 'Second Semester',
+                        icon: Icons.info,
+                        label: 'Issues',
+                        data: '0 issues',
+                        backgroundColorPalette: Palette.secondaryColor,
+                        onTapped: () {
+                          context.push('/dashboard/issues/');
+                        },
                       ),
                     ],
                   ),

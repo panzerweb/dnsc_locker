@@ -16,7 +16,7 @@ class MainInterface extends StatelessWidget {
 
     if (location.startsWith('/dashboard')) return 0;
     if (location.startsWith('/browse')) return 1;
-    if (location.startsWith('/settings')) return 2;
+    if (location.startsWith('/systems')) return 2;
 
     return 0;
   }
@@ -30,7 +30,7 @@ class MainInterface extends StatelessWidget {
         context.go('/browse');
         break;
       case 2:
-        context.go('/settings');
+        context.go('/systems');
         break;
     }
   }
@@ -54,10 +54,7 @@ class MainInterface extends StatelessWidget {
             label: "Dashboard",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.dns), label: "Browse"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.public), label: "Systems"),
         ],
       ),
     );

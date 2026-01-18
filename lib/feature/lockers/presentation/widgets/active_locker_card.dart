@@ -1,5 +1,6 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ActiveLockerCard extends StatelessWidget {
   const ActiveLockerCard({super.key});
@@ -64,13 +65,23 @@ class ActiveLockerCard extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(
-                  Icons.fullscreen,
-                  color: Palette.lightShadeSecondary,
-                  size: 32,
+                IconButton.outlined(
+                  onPressed: () {
+                    context.push('/dashboard/current_subscription');
+                  },
+                  icon: Icon(
+                    Icons.fullscreen,
+                    color: Palette.lightShadeSecondary,
+                    size: 32,
+                  ),
                 ),
                 const SizedBox(height: 32),
-                Icon(Icons.info, color: Palette.darkShadePrimary),
+                IconButton(
+                  onPressed: () {
+                    context.push('/dashboard/submit_issue');
+                  },
+                  icon: Icon(Icons.info, color: Palette.darkShadePrimary),
+                ),
               ],
             ),
           ],

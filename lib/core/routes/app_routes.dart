@@ -4,7 +4,10 @@ import 'package:dnsc_locker/feature/auth/presentation/pages/login_page.dart';
 import 'package:dnsc_locker/feature/auth/presentation/pages/register_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/dashboard_page.dart';
-import 'package:dnsc_locker/feature/lockers/presentation/pages/settings_page.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/pages/report/issues_page.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/pages/report/submit_issue_page.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/pages/systems_page.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/pages/subscription/subscription_page.dart';
 import 'package:dnsc_locker/home_screen.dart';
 import 'package:dnsc_locker/main_interface.dart';
 import 'package:flutter/material.dart';
@@ -59,9 +62,38 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/dashboard',
           builder: (context, state) => DashboardPage(),
+          routes: <GoRoute>[
+            /*
+
+              When dynamic, we can pass a parameter for the
+              specific locker subscription entity
+
+              I think we can use the 'extra' for it
+            */
+            GoRoute(
+              path: 'current_subscription',
+              builder: (context, state) => SubscriptionPage(),
+            ),
+            /*
+              Submitting an issue regarding the locker
+              We can pass a locker id from subscription
+              to automatically identify the specific locker
+
+              I think we can use the 'extra' for it
+            */
+            GoRoute(
+              path: 'submit_issue',
+              builder: (context, state) => SubmitIssuePage(),
+            ),
+            GoRoute(path: 'issues', builder: (context, state) => IssuesPage()),
+          ],
         ),
+
+        /*
+          Routes outside the dashboard route
+        */
         GoRoute(path: '/browse', builder: (context, state) => BrowseLockers()),
-        GoRoute(path: '/settings', builder: (context, state) => SettingsPage()),
+        GoRoute(path: '/systems', builder: (context, state) => SystemsPage()),
       ],
     ),
   ],
