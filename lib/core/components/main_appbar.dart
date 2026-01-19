@@ -1,5 +1,6 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /*
   COMPONENT FOLDER: Common widgets that are reusable to the entire application
@@ -50,12 +51,8 @@ class MainAppbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: <Widget>[
         IconButton(
-          onPressed: () async {
-            null;
-            // await context.push('/profile');
-            // if (onProfileUpdate != null) {
-            //   onProfileUpdate!(); // reload dashboard username
-            // }
+          onPressed: () {
+            context.push('/profile');
           },
           icon: Icon(Icons.person),
         ),

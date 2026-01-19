@@ -7,7 +7,7 @@ class UserModel {
   final String? first_name;
   final String? last_name;
   final InstituteModel? institute;
-  final int? profile;
+  final String? profile;
 
   UserModel({
     required this.username,
@@ -27,7 +27,7 @@ class UserModel {
       institute: json['institute'] != null
           ? InstituteModel.fromJson(json['institute'])
           : null,
-      profile: json['profile'] as int?,
+      profile: json['profile'] as String?,
     );
   }
 

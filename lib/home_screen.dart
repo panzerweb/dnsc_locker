@@ -3,17 +3,11 @@ import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  Future<String?> isTokenExisting() async {
-    final token = await locator<TokenService>().getToken();
-    return token;
+  Future<String?> _getToken() {
+    return locator<TokenService>().getToken();
   }
 
   @override
@@ -30,89 +24,79 @@ class _HomeScreenState extends State<HomeScreen> {
               end: Alignment.bottomCenter,
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // 🏫 School Logo Placeholder
-              Container(
-                height: 120,
-                width: 120,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(60),
-                ),
-                child: const Icon(Icons.school, size: 64, color: Colors.green),
-              ),
+          child: FutureBuilder<String?>(
+            future: _getToken(),
+            builder: (context, snapshot) {
+              final isLoggedIn = snapshot.data != null;
 
-              const SizedBox(height: 24),
-
-              // 📌 App Title
-              Text(
-                "DNSC LRMS",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              // 📖 Subtitle
-              Text(
-                "DNSC Official Locker Rental Application",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.white70),
-              ),
-
-              const SizedBox(height: 40),
-
-              // 🔐 Sign In Button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // 🏫 Logo
+                  Container(
+                    height: 120,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                    child: const Icon(
+                      Icons.school,
+                      size: 64,
+                      color: Colors.green,
                     ),
                   ),
-                  onPressed: () {
-                    context.push('/login');
-                  },
-                  child: const Text(
-                    "Sign In",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
 
-              const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
-              // 📝 Sign Up Button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  // 📌 Title
+                  const Text(
+                    "DNSC LRMS",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
-                  onPressed: () {
-                    context.push('/register');
-                  },
-                  child: const Text(
-                    "Create an Account",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+
+                  const SizedBox(height: 8),
+
+                  // 📖 Subtitle
+                  const Text(
+                    "DNSC Official Locker Rental Application",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.white70),
                   ),
-                ),
-              ),
-            ],
+
+                  const SizedBox(height: 40),
+
+                  // 🎯 CTA Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        context.push(isLoggedIn ? '/dashboard' : '/login');
+                      },
+                      child: Text(
+                        isLoggedIn ? "Go to Dashboard" : "Sign In",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

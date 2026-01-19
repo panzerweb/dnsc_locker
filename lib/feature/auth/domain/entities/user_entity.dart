@@ -44,7 +44,7 @@ class UserEntity {
   final String? first_name;
   final String? last_name;
   final InstituteEntity? institute;
-  final int? profile;
+  final String? profile;
 
   UserEntity({
     required this.username,

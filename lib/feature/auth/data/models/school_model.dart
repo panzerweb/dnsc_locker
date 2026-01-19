@@ -8,7 +8,6 @@ class SchoolModel {
   final String location;
   final String createdAt;
   final String updatedAt;
-  final int? updatedBy;
 
   SchoolModel({
     required this.id,
@@ -18,7 +17,6 @@ class SchoolModel {
     required this.location,
     required this.createdAt,
     required this.updatedAt,
-    this.updatedBy,
   });
 
   factory SchoolModel.fromJson(Map<String, dynamic> json) {
@@ -30,7 +28,6 @@ class SchoolModel {
       location: json['location'] as String,
       createdAt: json['created_at'] as String,
       updatedAt: json['updated_at'] as String,
-      updatedBy: json['updated_by'] as int?,
     );
   }
 
@@ -43,7 +40,6 @@ class SchoolModel {
       location: location,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      updatedBy: updatedBy,
     );
   }
 }

@@ -11,7 +11,7 @@ class ActiveIndicatorRow extends StatelessWidget {
       children: [
         Icon(Icons.circle, color: Colors.green),
         Text(
-          "Active Locker",
+          "Paid & Active",
           style: TextStyle(
             color: Palette.darkShadePrimary,
             fontWeight: FontWeight.w600,

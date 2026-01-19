@@ -92,12 +92,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     SubDetailsTile(
                       leading: Icon(Icons.info),
                       title: 'Status',
-                      subtitle: 'Active',
+                      subtitle: 'Paid',
                     ),
                     SubDetailsTile(
                       leading: Icon(Icons.attach_money),
                       title: 'Rental Fee',
-                      subtitle: 'Php 30.00',
+                      subtitle: 'Php 100.00',
                     ),
                     SubDetailsTile(
                       leading: Icon(Icons.person),

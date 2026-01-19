@@ -13,7 +13,6 @@ import 'package:dnsc_locker/feature/auth/domain/entities/school_entity.dart';
         "location": "Panabo New Visayas DDN",
         "created_at": "2025-10-13T13:29:56.191837Z",
         "updated_at": "2025-10-13T13:29:56.191837Z",
-        "updated_by": null
       },
       "created_at": "2025-10-13T13:29:56.191837Z",
       "updated_at": "2025-10-13T13:29:56.191837Z",
@@ -29,7 +28,6 @@ class InstituteEntity {
   final String updatedAt;
   final String instituteName;
   final String? logo;
-  final int? updatedBy;
 
   InstituteEntity({
     required this.id,
@@ -38,6 +36,5 @@ class InstituteEntity {
     required this.updatedAt,
     required this.instituteName,
     this.logo,
-    this.updatedBy,
   });
 }

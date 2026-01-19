@@ -6,7 +6,6 @@ class SchoolEntity {
   final String location;
   final String createdAt;
   final String updatedAt;
-  final int? updatedBy;
 
   SchoolEntity({
     required this.id,
@@ -16,6 +15,5 @@ class SchoolEntity {
     required this.location,
     required this.createdAt,
     required this.updatedAt,
-    this.updatedBy,
   });
 }

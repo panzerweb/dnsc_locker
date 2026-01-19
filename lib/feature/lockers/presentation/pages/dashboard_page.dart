@@ -4,6 +4,7 @@ import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/active_indicator_row.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/active_locker_card.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/widgets/auth_user_error.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/header_section.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/related_detail_card.dart';
 import 'package:flutter/material.dart';
@@ -101,8 +102,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     children: [
                       RelatedDetailCard(
                         icon: Icons.attach_money,
-                        label: 'Rent Fee',
-                        data: '30.00',
+                        label: 'Total Payment',
+                        data: '100.00',
                         backgroundColorPalette: Palette.accentColor,
                         onTapped: null,
                       ),
@@ -122,7 +123,7 @@ class _DashboardPageState extends State<DashboardPage> {
             }
 
             if (state is AuthenticatedUserError) {
-              return Center(child: Text(state.message));
+              return AuthUserError(message: state.message);
             }
 
             return const SizedBox.shrink();

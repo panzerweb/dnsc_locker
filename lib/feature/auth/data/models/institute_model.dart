@@ -8,7 +8,6 @@ class InstituteModel {
   final String updatedAt;
   final String instituteName;
   final String? logo;
-  final int? updatedBy;
 
   InstituteModel({
     required this.id,
@@ -17,7 +16,6 @@ class InstituteModel {
     required this.updatedAt,
     required this.instituteName,
     this.logo,
-    this.updatedBy,
   });
 
   factory InstituteModel.fromJson(Map<String, dynamic> json) {
@@ -30,7 +28,6 @@ class InstituteModel {
       updatedAt: json['updated_at'] as String,
       instituteName: json['institute_name'] as String,
       logo: json['logo'] as String?,
-      updatedBy: json['updated_by'] as int?,
     );
   }
 
@@ -39,10 +36,9 @@ class InstituteModel {
       id: id,
       school: school?.toEntity(),
       instituteName: instituteName,
-      createdAt: '',
-      updatedAt: '',
+      createdAt: createdAt,
+      updatedAt: updatedAt,
       logo: logo,
-      updatedBy: updatedBy!,
     );
   }
 }
