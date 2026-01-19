@@ -102,7 +102,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     children: [
                       RelatedDetailCard(
                         icon: Icons.attach_money,
-                        label: 'Total Payment',
+                        label: 'Total Balance',
                         data: '100.00',
                         backgroundColorPalette: Palette.accentColor,
                         onTapped: null,

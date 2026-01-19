@@ -1,5 +1,9 @@
+import 'package:dnsc_locker/core/helper/get_initials.dart';
 import 'package:dnsc_locker/core/styles/palette.dart';
+import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
+import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 /*
@@ -21,7 +25,7 @@ import 'package:go_router/go_router.dart';
     appbar: ScaffoldAppBar(title: string),
 */
 
-class MainAppbar extends StatelessWidget implements PreferredSizeWidget {
+class MainAppbar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final String? username;
   // final VoidCallback? onProfileUpdate;
@@ -32,6 +36,21 @@ class MainAppbar extends StatelessWidget implements PreferredSizeWidget {
     this.username,
     // this.onProfileUpdate,
   });
+
+  @override
+  State<MainAppbar> createState() => _MainAppbarState();
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class _MainAppbarState extends State<MainAppbar> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthCubit>().loadCurrentProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +64,49 @@ class MainAppbar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       title: Center(
         child: Text(
-          title,
+          widget.title,
           style: TextStyle(color: Palette.lightShadePrimary, fontSize: 18),
         ),
       ),
-      actions: <Widget>[
-        IconButton(
-          onPressed: () {
-            context.push('/profile');
+      actions: [
+        BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            if (state is AuthenticatedUserLoaded) {
+              final user = state.user;
+              return Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: InkWell(
+                  onTap: () {
+                    context.push('/profile');
+                  },
+                  splashColor: Palette.darkShadePrimary,
+                  child: CircleAvatar(
+                    radius: 36,
+                    backgroundColor: Palette.accentColor,
+                    child: Text(
+                      GetInitials.getInitials(
+                        '${user.first_name} ${user.last_name}',
+                      ),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            return const SizedBox.shrink();
           },
-          icon: Icon(Icons.person),
         ),
+        // IconButton(
+        //   onPressed: () {
+        //     context.push('/profile');
+        //   },
+        //   icon: Icon(Icons.person),
+        // ),
       ],
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(70.0);
 }

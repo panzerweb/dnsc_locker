@@ -9,7 +9,16 @@
 |--------------------------------------------------------------------------
 */
 class ApiPath {
+  // Auth and Profile endpoints
   static const login = 'api/v1/login/';
   static const register = 'api/v1/users/';
   static const currentLoggedUser = 'api/v1/me/';
+
+  // Locker endpoints
+
+  // Locker subscription endpoints
+
+  // Locker subscription request endpoints
+
+  // Report issues endpoints
 }

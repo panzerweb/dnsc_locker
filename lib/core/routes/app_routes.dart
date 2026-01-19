@@ -7,7 +7,7 @@ import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/br
 import 'package:dnsc_locker/feature/lockers/presentation/pages/dashboard_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/report/issues_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/report/submit_issue_page.dart';
-import 'package:dnsc_locker/feature/lockers/presentation/pages/systems/systems_page.dart';
+import 'package:dnsc_locker/feature/systems/presentation/pages/systems_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/subscription/subscription_page.dart';
 import 'package:dnsc_locker/home_screen.dart';
 import 'package:dnsc_locker/main_interface.dart';
