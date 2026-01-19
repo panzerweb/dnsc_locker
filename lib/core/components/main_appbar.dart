@@ -74,14 +74,13 @@ class _MainAppbarState extends State<MainAppbar> {
             if (state is AuthenticatedUserLoaded) {
               final user = state.user;
               return Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.all(8.0),
                 child: InkWell(
                   onTap: () {
                     context.push('/profile');
                   },
                   splashColor: Palette.darkShadePrimary,
                   child: CircleAvatar(
-                    radius: 36,
                     backgroundColor: Palette.accentColor,
                     child: Text(
                       GetInitials.getInitials(
