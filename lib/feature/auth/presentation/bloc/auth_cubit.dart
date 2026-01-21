@@ -26,11 +26,12 @@ class AuthCubit extends Cubit<AuthState> {
 
       if (success) {
         emit(AuthAuthenticated());
+        loadCurrentProfile();
       } else {
-        emit(const AuthError('Invalid username or password'));
+        emit(AuthError('Invalid username or password'));
       }
     } catch (e) {
-      emit(const AuthError('Login failed. Please try again.'));
+      emit(AuthError('Login failed. Please try again.'));
     }
   }
 
@@ -70,20 +71,22 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> loadCurrentProfile() async {
-    emit(AuthenticatedUserLoading());
+    if (state is AuthenticatedUserLoaded) return;
+
+    emit(AuthLoading());
 
     try {
       final user = await currentUser();
 
       if (user == null) {
-        emit(AuthenticatedUserError('User is not found'));
+        emit(AuthError('User is not found'));
         return;
       } else {
         emit(AuthenticatedUserLoaded(user));
       }
     } catch (e) {
       print(e);
-      emit(AuthenticatedUserError('User fetching error: $e'));
+      emit(AuthError('User fetching error: $e'));
     }
   }
 }

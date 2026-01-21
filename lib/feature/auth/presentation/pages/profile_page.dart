@@ -14,20 +14,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   @override
-  void initState() {
-    super.initState();
-    context.read<AuthCubit>().loadCurrentProfile();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        if (state is AuthenticatedUserLoading) {
+        if (state is AuthLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state is AuthenticatedUserError) {
+        if (state is AuthError) {
           return AuthUserError(message: state.message);
         }
 

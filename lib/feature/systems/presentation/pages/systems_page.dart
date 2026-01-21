@@ -5,6 +5,6 @@ class SystemsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("Systems Page"));
+    return Center(child: Text("Student Portal Page"));
   }
 }

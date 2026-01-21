@@ -54,7 +54,10 @@ class MainInterface extends StatelessWidget {
             label: "Dashboard",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.dns), label: "Browse"),
-          BottomNavigationBarItem(icon: Icon(Icons.public), label: "Systems"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_4),
+            label: "Student Portal",
+          ),
         ],
       ),
     );

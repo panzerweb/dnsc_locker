@@ -20,12 +20,6 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   @override
-  void initState() {
-    super.initState();
-    context.read<AuthCubit>().loadCurrentProfile();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppbar(title: 'DNSC LRMS'),
@@ -33,13 +27,13 @@ class _DashboardPageState extends State<DashboardPage> {
         padding: const EdgeInsets.all(16),
         child: BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
-            if (state is AuthenticatedUserLoading) {
+            if (state is AuthLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
             if (state is AuthenticatedUserLoaded) {
               final user = state.user;
-
+              print("You loaded dashboard");
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -122,7 +116,7 @@ class _DashboardPageState extends State<DashboardPage> {
               );
             }
 
-            if (state is AuthenticatedUserError) {
+            if (state is AuthError) {
               return AuthUserError(message: state.message);
             }
 

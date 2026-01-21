@@ -15,7 +15,11 @@ Future<void> main() async {
 
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => locator<AuthCubit>())],
+      providers: [
+        BlocProvider<AuthCubit>(
+          create: (_) => locator<AuthCubit>()..loadCurrentProfile(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
