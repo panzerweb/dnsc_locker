@@ -5,6 +5,8 @@ class InstituteEntity {
 
   InstituteEntity({required this.id, required this.instituteName, this.logo});
 
+  // remove fromJSON and toJSON from all entities once
+  // You apply real dynamic data using clean architecture
   factory InstituteEntity.fromJson(Map<String, dynamic> json) {
     return InstituteEntity(
       id: json['id'] as int,

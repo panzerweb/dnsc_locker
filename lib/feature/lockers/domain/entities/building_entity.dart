@@ -11,6 +11,9 @@ class BuildingEntity {
     this.institute,
   });
 
+  // remove fromJSON and toJSON from all entities once
+  // You apply real dynamic data using clean architecture
+
   factory BuildingEntity.fromJson(Map<String, dynamic> json) {
     return BuildingEntity(
       name: json['name'] as String,

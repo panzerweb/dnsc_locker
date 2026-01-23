@@ -81,11 +81,11 @@ class LockerCard extends StatelessWidget {
             ),
 
             // RIGHT ACTION
-            TextButton(
+            IconButton(
               onPressed: () {
                 // TODO: navigate to locker detail / reserve
               },
-              child: const Text('View'),
+              icon: Icon(Icons.add_circle_outline_rounded),
             ),
           ],
         ),
