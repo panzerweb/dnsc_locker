@@ -1,0 +1,112 @@
+  Future<List<LockerEntity>?> _showBuilding(int instituteId) async {
+    return showDialog<List<LockerEntity>>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        final buildingsBaseOnInstitute = lockers.where((locker) {
+          return locker.building.institute!.id == instituteId;
+        }).toList();
+
+        // Create a map and put the building name as the key
+        // While lockers base on the institute
+        final Map<String, List<LockerEntity>> lockersByBuilding = {};
+
+        for (var locker in buildingsBaseOnInstitute) {
+          final buildingName = locker.building.name;
+
+          lockersByBuilding.putIfAbsent(buildingName, () => []);
+          lockersByBuilding[buildingName]!.add(locker);
+        }
+
+        final buildings = lockersByBuilding.entries.toList();
+
+        // print(buildings);
+
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 420, minWidth: 300),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                  child: Row(
+                    children: [
+                      Icon(Icons.apartment, color: Palette.darkShadePrimary),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Buildings",
+                        style: TextStyle(
+                          color: Palette.darkShadePrimary,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Divider(height: 1),
+
+                if (buildings.isEmpty)
+                  EmptyListText(
+                    title: 'No available buildings',
+                    message:
+                        'There are no fetched building data for this institute',
+                    height: 24,
+                    icon: Icons.apartment_outlined,
+                  ),
+
+                // List
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: buildings.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final entry = buildings[index];
+                      final buildingName = entry.key;
+                      final lockers = entry.value;
+                      final building = lockers.first.building;
+
+                      return ListTile(
+                        leading: const Icon(Icons.location_city),
+                        title: Text(buildingName),
+                        subtitle: Text(
+                          '${building.floors} floors • ${lockers.length} lockers',
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          context.pop(lockers);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+
+
+    onPressed: () async {
+                                  final selectedLockers = await _showBuilding(
+                                    user.institute!.id,
+                                  );
+
+                                  if (selectedLockers == null ||
+                                      selectedLockers.isEmpty)
+                                    return;
+
+                                  setState(() {
+                                    selectedBuilding =
+                                        selectedLockers.first.building.name;
+                                    hasSelected = true;
+                                  });
+                                }

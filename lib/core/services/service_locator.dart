@@ -9,13 +9,20 @@ import 'package:dnsc_locker/feature/auth/domain/usecases/login_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/logout_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/register_use_case.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
+import 'package:dnsc_locker/feature/lockers/data/data_sources/lockers_remote_data_source.dart';
+import 'package:dnsc_locker/feature/lockers/data/data_sources/lockers_remote_data_source_impl.dart';
+import 'package:dnsc_locker/feature/lockers/data/repositories/locker_repository_impl.dart';
+import 'package:dnsc_locker/feature/lockers/domain/repository/locker_repository.dart';
+import 'package:dnsc_locker/feature/lockers/domain/usecases/get_lockers_use_case.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final GetIt locator = GetIt.instance;
 
 // Recommended to load API url directly from .env itself
-final API_URL = 'http://127.0.0.1:8000/';
+final API_URL = dotenv.get('DJANGO_API_URL', fallback: 'MISSING');
 
 void setupLocator() {
   /* 
@@ -36,6 +43,12 @@ void setupLocator() {
             options.headers['Authorization'] = 'Bearer $token';
           }
           return handler.next(options);
+        },
+        onError: (error, handler) {
+          print(
+            'ERROR[${error.response?.statusCode}] => PATH: ${error.requestOptions.path}',
+          );
+          return handler.next(error);
         },
       ),
     );
@@ -89,4 +102,14 @@ void setupLocator() {
   /*
     [Other feature registry below]
   */
+  locator.registerLazySingleton<LockersRemoteDataSource>(
+    () => LockersRemoteDataSourceImpl(locator<Dio>()),
+  );
+  locator.registerLazySingleton<LockerRepository>(
+    () => LockerRepositoryImpl(locator<LockersRemoteDataSource>()),
+  );
+  locator.registerLazySingleton(
+    () => GetLockersUseCase(locator<LockerRepository>()),
+  );
+  locator.registerFactory(() => LockerCubit(getLockersUseCase: locator()));
 }

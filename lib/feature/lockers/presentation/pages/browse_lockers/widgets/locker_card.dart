@@ -1,3 +1,4 @@
+import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ class LockerCard extends StatelessWidget {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 12),
+      color: Palette.accentColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -22,13 +24,17 @@ class LockerCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.1),
+                color: locker.isActive != false
+                    ? Palette.secondaryColor
+                    : Palette.darkShadeSecondary,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: locker.isRented != 1
-                  ? const Icon(Icons.check_circle_outline_rounded, size: 24)
+              child: locker.isActive != false
+                  ? const Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 24,
+                      color: Palette.lightShadeSecondary,
+                    )
                   : const Icon(Icons.lock, size: 24),
             ),
 
@@ -41,8 +47,9 @@ class LockerCard extends StatelessWidget {
                 children: [
                   // Locker number
                   Text(
-                    'Locker ${locker.lockerNo}',
+                    'Locker ${locker.lockerNumber}',
                     style: const TextStyle(
+                      color: Palette.lightShadePrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -53,32 +60,21 @@ class LockerCard extends StatelessWidget {
                   // Building + floor
                   Row(
                     children: [
-                      const Icon(Icons.apartment, size: 14),
+                      const Icon(
+                        Icons.apartment,
+                        size: 14,
+                        color: Palette.lightShadeSecondary,
+                      ),
                       const SizedBox(width: 4),
                       Text(
-                        '${locker.building.name} · Floor ${locker.building.floors}',
-                        style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                        '${locker.building.name} · Floor ${locker.floor}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Palette.lightShadeSecondary,
+                        ),
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 2),
-
-                  // Institute
-                  if (locker.building.institute != null)
-                    Row(
-                      children: [
-                        const Icon(Icons.school, size: 14),
-                        const SizedBox(width: 4),
-                        Text(
-                          locker.building.institute!.instituteName,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
                 ],
               ),
             ),
@@ -86,9 +82,21 @@ class LockerCard extends StatelessWidget {
             // RIGHT ACTION
             IconButton(
               onPressed: () {
-                context.push('/browse/locker/${locker.id}');
+                locker.isActive != false
+                    ? context.push('/browse/locker/${locker.id}')
+                    : null;
               },
-              icon: Icon(Icons.add_circle_outline_rounded),
+              icon: locker.isActive != false
+                  ? Icon(
+                      Icons.add_circle_outline_rounded,
+                      size: 28,
+                      color: Palette.secondaryColor,
+                    )
+                  : Icon(
+                      Icons.disabled_visible_sharp,
+                      size: 28,
+                      color: Palette.secondaryColor,
+                    ),
             ),
           ],
         ),

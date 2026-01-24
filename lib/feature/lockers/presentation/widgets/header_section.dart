@@ -8,8 +8,8 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userFirstName = user.first_name ?? 'Guest';
-    final instituteDetailName = user.institute!.instituteName;
+    final userFirstName = user.firstName ?? 'Guest';
+    final instituteDetailName = user.institute?.instituteName ?? 'No Institute';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

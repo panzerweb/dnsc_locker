@@ -15,6 +15,7 @@ class ApiPath {
   static const currentLoggedUser = 'api/v1/me/';
 
   // Locker endpoints
+  static const lockers = 'api/v1/lockers/';
 
   // Locker subscription endpoints
 

@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                           label: 'Password',
                           hideText: true,
                           validator: (value) =>
-                              value == null || value.length <= 6
+                              value == null || value.length <= 5
                               ? 'Password must be at least 6 characters'
                               : null,
                         ),

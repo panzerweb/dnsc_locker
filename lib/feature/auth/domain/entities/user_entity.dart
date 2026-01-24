@@ -39,19 +39,21 @@
 import 'package:dnsc_locker/feature/auth/domain/entities/institute_entity.dart';
 
 class UserEntity {
-  final String username;
-  final String email;
-  final String? first_name;
-  final String? last_name;
   final InstituteEntity? institute;
+  final String username;
+  final String? firstName;
+  final String? lastName;
+  final String email;
   final String? profile;
+  final List<String> groups;
 
-  UserEntity({
-    required this.username,
-    required this.email,
-    this.first_name,
-    this.last_name,
+  const UserEntity({
     this.institute,
+    required this.username,
+    this.firstName,
+    this.lastName,
+    required this.email,
     this.profile,
+    required this.groups,
   });
 }

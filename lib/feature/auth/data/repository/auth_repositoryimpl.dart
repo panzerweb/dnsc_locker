@@ -41,6 +41,10 @@ class AuthRepositoryimpl implements AuthRepository {
   @override
   Future<UserEntity?> loadUserProfile() async {
     final user = await remote.loadUserProfile();
-    return user?.toEntity();
+
+    if (user == null) {
+      return null;
+    }
+    return user.toEntity();
   }
 }

@@ -60,7 +60,7 @@ class _ProfileHeader extends StatelessWidget {
                   backgroundColor: Palette.accentColor,
                   child: Text(
                     GetInitials.getInitials(
-                      '${user.first_name} ${user.last_name}',
+                      '${user.firstName} ${user.lastName}',
                     ),
                     style: const TextStyle(
                       color: Colors.white,
@@ -71,7 +71,7 @@ class _ProfileHeader extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                '${user.first_name} ${user.last_name}',
+                '${user.firstName} ${user.lastName}',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Palette.lightShadePrimary,
                   fontWeight: FontWeight.w600,
@@ -117,17 +117,17 @@ class _ProfileDetails extends StatelessWidget {
             ProfileDetailsTile(
               leading: const Icon(Icons.groups_2),
               title: 'Institute',
-              subtitle: user.institute!.instituteName,
+              subtitle: user.institute?.instituteName ?? 'No Institute',
             ),
             ProfileDetailsTile(
               leading: const Icon(Icons.email),
               title: 'Email Address',
               subtitle: user.email,
             ),
-            const ProfileDetailsTile(
+            ProfileDetailsTile(
               leading: Icon(Icons.person),
-              title: 'Role',
-              subtitle: 'Student',
+              title: 'Group',
+              subtitle: user.groups.toString(),
             ),
 
             /*

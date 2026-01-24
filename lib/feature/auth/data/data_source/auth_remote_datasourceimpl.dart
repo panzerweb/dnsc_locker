@@ -80,18 +80,13 @@ class AuthRemoteDatasourceimpl implements AuthRemoteDatasource {
     try {
       final response = await dio.get(ApiPath.currentLoggedUser);
 
-      print(response.data);
+      final data = response.data['data'];
+      if (data == null) return null;
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final user = UserModel.fromJson(response.data['data']);
-        print(user);
-        return user;
-      } else {
-        print("Something went wrong with data: ${response.data}");
-      }
+      return UserModel.fromJson(data);
     } on DioException catch (e) {
       print('Fetching user profile failed: ${e.response?.data}');
+      return null;
     }
-    return null;
   }
 }
