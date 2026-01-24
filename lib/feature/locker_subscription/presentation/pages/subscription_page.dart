@@ -1,5 +1,5 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
-import 'package:dnsc_locker/feature/lockers/presentation/pages/subscription/widgets/sub_details_tile.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/sub_details_tile.dart';
 import 'package:flutter/material.dart';
 
 class SubscriptionPage extends StatefulWidget {

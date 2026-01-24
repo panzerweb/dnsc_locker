@@ -3,12 +3,13 @@ import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:dnsc_locker/feature/auth/presentation/pages/login_page.dart';
 import 'package:dnsc_locker/feature/auth/presentation/pages/profile_page.dart';
 import 'package:dnsc_locker/feature/auth/presentation/pages/register_page.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/pages/renting_screen_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/browse_lockers.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/dashboard_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/report/issues_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/report/submit_issue_page.dart';
 import 'package:dnsc_locker/feature/systems/presentation/pages/systems_page.dart';
-import 'package:dnsc_locker/feature/lockers/presentation/pages/subscription/subscription_page.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/pages/subscription_page.dart';
 import 'package:dnsc_locker/home_screen.dart';
 import 'package:dnsc_locker/main_interface.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,18 @@ final GoRouter router = GoRouter(
         /*
           Routes outside the dashboard route
         */
-        GoRoute(path: '/browse', builder: (context, state) => BrowseLockers()),
+        GoRoute(
+          path: '/browse',
+          builder: (context, state) => BrowseLockers(),
+          routes: <GoRoute>[
+            GoRoute(
+              path: 'locker/:lockerId',
+              builder: (context, state) => RentingScreenPage(
+                lockerId: state.pathParameters['lockerId']!,
+              ),
+            ),
+          ],
+        ),
         GoRoute(path: '/systems', builder: (context, state) => SystemsPage()),
       ],
     ),

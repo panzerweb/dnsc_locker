@@ -7,7 +7,7 @@ import 'package:dnsc_locker/feature/lockers/domain/entities/institute_entity.dar
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/browse_page_header_section.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/locker_card.dart';
-import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/no_selected_building.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/empty_list_text.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/auth_user_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +26,7 @@ final List<LockerEntity> mockLockerData = [
         instituteName: 'Institute of Computing',
       ),
     ),
-    isRented: 0,
+    isRented: 1,
     status: 0,
   ),
   LockerEntity(
@@ -101,15 +101,20 @@ class _BrowseLockersState extends State<BrowseLockers> {
           return locker.building.institute!.id == instituteId;
         }).toList();
 
+        // Create a map and put the building name as the key
+        // While lockers base on the institute
         final Map<String, List<LockerEntity>> lockersByBuilding = {};
 
         for (var locker in buildingsBaseOnInstitute) {
           final buildingName = locker.building.name;
+
           lockersByBuilding.putIfAbsent(buildingName, () => []);
           lockersByBuilding[buildingName]!.add(locker);
         }
 
         final buildings = lockersByBuilding.entries.toList();
+
+        // print(buildings);
 
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -140,6 +145,15 @@ class _BrowseLockersState extends State<BrowseLockers> {
                 ),
 
                 const Divider(height: 1),
+
+                if (buildings.isEmpty)
+                  EmptyListText(
+                    title: 'No available buildings',
+                    message:
+                        'There are no fetched building data for this institute',
+                    height: 24,
+                    icon: Icons.apartment_outlined,
+                  ),
 
                 // List
                 Expanded(
@@ -279,7 +293,13 @@ class _BrowseLockersState extends State<BrowseLockers> {
                     ),
 
                     // If you have not selected a building
-                    if (hasSelected == false) NoSelectedBuilding(),
+                    if (hasSelected == false)
+                      EmptyListText(
+                        title: 'Select Building',
+                        message: 'Choose a building to view available lockers',
+                        height: 64,
+                        icon: Icons.apartment_outlined,
+                      ),
 
                     /*
                       Else, show a BlocBuilder for the Lockers

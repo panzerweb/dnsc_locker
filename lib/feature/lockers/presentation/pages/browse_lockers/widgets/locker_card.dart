@@ -1,5 +1,6 @@
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LockerCard extends StatelessWidget {
   final LockerEntity locker;
@@ -26,7 +27,9 @@ class LockerCard extends StatelessWidget {
                 ).colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.lock, size: 24),
+              child: locker.isRented != 1
+                  ? const Icon(Icons.check_circle_outline_rounded, size: 24)
+                  : const Icon(Icons.lock, size: 24),
             ),
 
             const SizedBox(width: 12),
@@ -83,7 +86,7 @@ class LockerCard extends StatelessWidget {
             // RIGHT ACTION
             IconButton(
               onPressed: () {
-                // TODO: navigate to locker detail / reserve
+                context.push('/browse/locker/${locker.id}');
               },
               icon: Icon(Icons.add_circle_outline_rounded),
             ),
