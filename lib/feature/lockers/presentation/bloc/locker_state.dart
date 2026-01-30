@@ -1,21 +1,33 @@
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 
-abstract class LockerState {
-  const LockerState();
-}
-
-class LockerInitial extends LockerState {}
-
-class LockerLoading extends LockerState {}
-
-class LockerLoaded extends LockerState {
+class LockerState {
   final List<LockerEntity> lockers;
+  final bool isLoading;
+  final bool hasReachedMax;
+  final int currentPage;
+  final bool? error;
 
-  LockerLoaded(this.lockers);
-}
+  const LockerState({
+    this.lockers = const [],
+    this.isLoading = false,
+    this.hasReachedMax = false,
+    this.currentPage = 1,
+    this.error,
+  });
 
-class LockerError extends LockerState {
-  final String error;
-
-  LockerError(this.error);
+  LockerState copyWith({
+    List<LockerEntity>? lockers,
+    bool? isLoading,
+    bool? hasReachedMax,
+    int? currentPage,
+    bool? errors,
+  }) {
+    return LockerState(
+      lockers: lockers ?? this.lockers,
+      isLoading: isLoading ?? this.isLoading,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      currentPage: currentPage ?? this.currentPage,
+      error: errors,
+    );
+  }
 }

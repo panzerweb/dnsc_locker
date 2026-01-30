@@ -2,7 +2,6 @@ import 'package:dnsc_locker/core/components/main_appbar.dart';
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
-import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_state.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/browse_page_header_section.dart';
@@ -11,7 +10,6 @@ import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/wi
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/auth_user_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class BrowseLockers extends StatefulWidget {
   const BrowseLockers({super.key});
@@ -21,6 +19,7 @@ class BrowseLockers extends StatefulWidget {
 }
 
 class _BrowseLockersState extends State<BrowseLockers> {
+  final _scrollController = ScrollController();
   String selectedBuilding = '';
   bool hasSelected = false;
 
@@ -29,6 +28,13 @@ class _BrowseLockersState extends State<BrowseLockers> {
     super.initState();
 
     context.read<LockerCubit>().loadLockers();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        context.read<LockerCubit>().loadLockers();
+      }
+    });
   }
 
   /*
@@ -112,34 +118,49 @@ class _BrowseLockersState extends State<BrowseLockers> {
                     */
                     BlocBuilder<LockerCubit, LockerState>(
                       builder: (context, state) {
-                        if (state is LockerLoading) {
+                        if (state.isLoading) {
                           return const CircularProgressIndicator(
                             color: Palette.accentColor,
                           );
                         }
-                        if (state is LockerError) {
+                        if (state.error == true) {
                           return const Center(
                             child: Text("Something is wrong fetching lockers"),
                           );
                         }
 
-                        if (state is LockerLoaded) {
-                          final lockers = state.lockers;
-
-                          return ListView.builder(
-                            itemCount: lockers.length,
-                            padding: const EdgeInsets.only(top: 8),
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final locker = lockers[index];
-
-                              return LockerCard(locker: locker);
-                            },
+                        if (state.lockers.isEmpty) {
+                          return const Center(
+                            child: EmptyListText(
+                              title: 'No Lockers',
+                              message: 'There are no available lockers',
+                              icon: Icons.apartment,
+                            ),
                           );
                         }
 
-                        return const SizedBox.shrink();
+                        return ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.only(top: 8),
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: state.hasReachedMax
+                              ? state.lockers.length
+                              : state.lockers.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index >= state.lockers.length) {
+                              return const Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
+                            final locker = state.lockers[index];
+                            return LockerCard(locker: locker);
+                          },
+                        );
                         // print(buildings);
                       },
                     ),

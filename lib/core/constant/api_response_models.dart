@@ -29,13 +29,13 @@ class ApiResponseModels<T> {
     );
   }
 
-  ApiResponseEntity toEntity() {
-    return ApiResponseEntity(
+  ApiResponseEntity<E> toEntity<E>(E Function(T model) mapToEntity) {
+    return ApiResponseEntity<E>(
       currentPage: currentPage,
       perPage: perPage,
       totalPages: totalPages,
       totalItems: totalItems,
-      data: data,
+      data: data.map(mapToEntity).toList(),
     );
   }
 }

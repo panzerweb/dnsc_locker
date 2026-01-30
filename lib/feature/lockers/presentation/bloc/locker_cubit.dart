@@ -5,22 +5,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class LockerCubit extends Cubit<LockerState> {
   final GetLockersUseCase getLockersUseCase;
 
-  LockerCubit({required this.getLockersUseCase}) : super(LockerInitial());
+  LockerCubit({required this.getLockersUseCase}) : super(const LockerState());
 
   Future<void> loadLockers() async {
-    emit(LockerLoading());
+    if (state.isLoading || state.hasReachedMax) {
+      return;
+    }
+    emit(state.copyWith(isLoading: true));
 
     try {
-      final lockers = await getLockersUseCase();
+      final response = await getLockersUseCase(page: state.currentPage);
 
-      if (lockers.isEmpty) {
-        emit(LockerError('There are no fetched lockers in the cubit'));
-      } else {
-        emit(LockerLoaded(lockers));
-      }
-    } catch (e) {
-      print(e);
-      emit(LockerError('Error fetching lockers: $e'));
+      final isLastPage = response.currentPage >= response.totalPages;
+
+      emit(
+        state.copyWith(
+          lockers: List.of(state.lockers)..addAll(response.data),
+          currentPage: state.currentPage + 1,
+          hasReachedMax: isLastPage,
+          isLoading: false,
+          errors: null,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(isLoading: false, errors: true));
     }
+  }
+
+  void refresh() {
+    emit(const LockerState());
+    loadLockers();
   }
 }

@@ -11,9 +11,14 @@ class LockersRemoteDataSourceImpl implements LockersRemoteDataSource {
   LockersRemoteDataSourceImpl(this.dio);
 
   @override
-  Future<List<LockerModels>> getLockers() async {
+  Future<ApiResponseModels<LockerModels>> getLockers({
+    required int page,
+  }) async {
     try {
-      final response = await dio.get(ApiPath.lockers);
+      final response = await dio.get(
+        ApiPath.lockers,
+        queryParameters: {'current_page': page},
+      );
 
       print(response.data);
 
@@ -23,12 +28,12 @@ class LockersRemoteDataSourceImpl implements LockersRemoteDataSource {
           response.data['data'],
           (json) => LockerModels.fromJson(json),
         );
-        return paginatedData.data;
+        return paginatedData;
       }
     } on DioException catch (e, stack) {
       print('Fetching lockers failed: $e');
       debugPrintStack(stackTrace: stack);
     }
-    return [];
+    throw Exception('Failed to fetch lockers');
   }
 }
