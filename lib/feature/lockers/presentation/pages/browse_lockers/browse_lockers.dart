@@ -37,6 +37,12 @@ class _BrowseLockersState extends State<BrowseLockers> {
     });
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   /*
   
     Show buildings of an institute
