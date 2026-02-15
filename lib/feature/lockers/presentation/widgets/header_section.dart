@@ -8,7 +8,7 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userFirstName = user.firstName ?? 'Guest';
+    final userFirstName = user.student?.firstName ?? 'Guest';
     final instituteDetailName = user.institute?.instituteName ?? 'No Institute';
 
     return Column(

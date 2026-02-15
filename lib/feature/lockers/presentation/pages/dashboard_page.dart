@@ -95,7 +95,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     childAspectRatio: 1.6,
                     children: [
                       RelatedDetailCard(
-                        icon: Icons.attach_money,
+                        icon: Icons.payment_outlined,
                         label: 'Total Balance',
                         data: '100.00',
                         backgroundColorPalette: Palette.accentColor,

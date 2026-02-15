@@ -1,6 +1,9 @@
 import 'package:dnsc_locker/core/components/pushed_appbar.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/renting_form.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RentingScreenPage extends StatelessWidget {
   final String lockerId;
@@ -9,7 +12,7 @@ class RentingScreenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PushedAppbar(title: 'Rent this locker'),
+      appBar: PushedAppbar(title: 'Rent Locker'),
 
       /*
         Use a blocbuilder in the future with the locker entity
@@ -18,7 +21,17 @@ class RentingScreenPage extends StatelessWidget {
 
         RentingForm() must accept a LockerEntity parameter
       */
-      body: RentingForm(),
+      body: BlocBuilder<LockerCubit, LockerState>(
+        builder: (context, state) {
+          for (var locker in state.lockers) {
+            if (locker.id == int.tryParse(lockerId)) {
+              return RentingForm(locker: locker);
+            }
+          }
+
+          return const CircularProgressIndicator();
+        },
+      ),
     );
   }
 }

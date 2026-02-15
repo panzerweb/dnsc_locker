@@ -84,7 +84,7 @@ class _MainAppbarState extends State<MainAppbar> {
                     backgroundColor: Palette.accentColor,
                     child: Text(
                       GetInitials.getInitials(
-                        '${user.firstName} ${user.lastName}',
+                        '${user.student?.firstName} ${user.student?.lastName}',
                       ),
                       style: const TextStyle(
                         color: Colors.white,

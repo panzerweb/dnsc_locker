@@ -20,7 +20,7 @@ class LockersRemoteDataSourceImpl implements LockersRemoteDataSource {
         queryParameters: {'current_page': page},
       );
 
-      print(response.data);
+      print("PAGINATED DATA: ${response.data['data']}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         // API has nested data -> response.data['data']
@@ -28,12 +28,13 @@ class LockersRemoteDataSourceImpl implements LockersRemoteDataSource {
           response.data['data'],
           (json) => LockerModels.fromJson(json),
         );
+
         return paginatedData;
       }
     } on DioException catch (e, stack) {
       print('Fetching lockers failed: $e');
       debugPrintStack(stackTrace: stack);
     }
-    throw Exception('Failed to fetch lockers');
+    throw Exception('Something is wrong!');
   }
 }

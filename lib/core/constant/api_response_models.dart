@@ -20,6 +20,7 @@ class ApiResponseModels<T> {
     T Function(Map<String, dynamic>) fromJsonT,
   ) {
     final list = (json['data'] as List<dynamic>? ?? []);
+
     return ApiResponseModels(
       currentPage: json['current_page'] as int,
       perPage: json['per_page'] as int,

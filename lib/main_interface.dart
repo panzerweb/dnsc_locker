@@ -16,7 +16,7 @@ class MainInterface extends StatelessWidget {
 
     if (location.startsWith('/dashboard')) return 0;
     if (location.startsWith('/browse')) return 1;
-    if (location.startsWith('/systems')) return 2;
+    if (location.startsWith('/transactions')) return 2;
 
     return 0;
   }
@@ -30,7 +30,7 @@ class MainInterface extends StatelessWidget {
         context.go('/browse');
         break;
       case 2:
-        context.go('/systems');
+        context.go('/transactions');
         break;
     }
   }
@@ -55,8 +55,8 @@ class MainInterface extends StatelessWidget {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.dns), label: "Browse"),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_4),
-            label: "Student Portal",
+            icon: Icon(Icons.history),
+            label: "Transactions",
           ),
         ],
       ),

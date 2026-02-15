@@ -60,7 +60,7 @@ class _ProfileHeader extends StatelessWidget {
                   backgroundColor: Palette.accentColor,
                   child: Text(
                     GetInitials.getInitials(
-                      '${user.firstName} ${user.lastName}',
+                      '${user.student?.firstName} ${user.student?.lastName}',
                     ),
                     style: const TextStyle(
                       color: Colors.white,
@@ -71,7 +71,7 @@ class _ProfileHeader extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                '${user.firstName} ${user.lastName}',
+                '${user.student?.firstName} ${user.student?.lastName}',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Palette.lightShadePrimary,
                   fontWeight: FontWeight.w600,
@@ -82,6 +82,14 @@ class _ProfileHeader extends StatelessWidget {
                 '@${user.username}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Palette.lightShadeSecondary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${user.student?.studentId}',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Palette.lightShadeSecondary,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
             ],
@@ -123,6 +131,12 @@ class _ProfileDetails extends StatelessWidget {
               leading: const Icon(Icons.email),
               title: 'Email Address',
               subtitle: user.email,
+            ),
+            ProfileDetailsTile(
+              leading: const Icon(Icons.school_sharp),
+              title: 'Program/Year/Set',
+              subtitle:
+                  "${user.student?.programName} ${user.student?.studentLevel}${user.student?.studentSet}",
             ),
             ProfileDetailsTile(
               leading: Icon(Icons.person),

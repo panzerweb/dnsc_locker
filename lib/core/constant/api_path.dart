@@ -17,9 +17,13 @@ class ApiPath {
   // Locker endpoints
   static const lockers = 'api/v1/lockers/';
 
+  // Locker Available endpoint -- Use for filtering
+  static const lockersAvailable = 'api/v1/lockers/available/';
+
   // Locker subscription endpoints
 
   // Locker subscription request endpoints
+  static const requestLocker = 'api/v1/locker-subscription-requests/';
 
   // Report issues endpoints
 }

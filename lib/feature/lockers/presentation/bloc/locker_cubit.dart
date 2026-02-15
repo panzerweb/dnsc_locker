@@ -32,6 +32,11 @@ class LockerCubit extends Cubit<LockerState> {
     }
   }
 
+  void resetAndLoad() {
+    emit(const LockerState());
+    loadLockers();
+  }
+
   void refresh() {
     emit(const LockerState());
     loadLockers();
