@@ -26,7 +26,7 @@ Future<void> main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<AuthCubit>(
-          create: (_) => locator<AuthCubit>()..loadCurrentProfile(),
+          create: (_) => locator<AuthCubit>()..checkIfAuthenticated(),
         ),
         BlocProvider<LockerCubit>(create: (_) => locator<LockerCubit>()),
       ],

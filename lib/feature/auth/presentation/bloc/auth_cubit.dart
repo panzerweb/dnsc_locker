@@ -1,3 +1,5 @@
+import 'package:dnsc_locker/core/services/service_locator.dart';
+import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/current_user_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/login_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/logout_use_case.dart';
@@ -70,6 +72,9 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthUnauthenticated());
   }
 
+  /*
+    This Cubit method loads the current profile
+  */
   Future<void> loadCurrentProfile() async {
     if (state is AuthenticatedUserLoaded) return;
 
@@ -87,6 +92,29 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       print(e);
       emit(AuthError('User fetching error: $e'));
+    }
+  }
+
+  /*
+    Acts as a guard that checks if the app has an authenticated
+    user via token
+
+    If there is none, then do not execute loadCurrentProfile()
+  */
+  Future<void> checkIfAuthenticated() async {
+    final tokenService = locator<TokenService>();
+    final token = await tokenService.getToken();
+
+    if (token == null) {
+      emit(AuthUnauthenticated());
+      return;
+    }
+
+    try {
+      await loadCurrentProfile();
+    } catch (e) {
+      emit(AuthUnauthenticated());
+      emit(AuthError("Checking authentication failed: $e"));
     }
   }
 }
