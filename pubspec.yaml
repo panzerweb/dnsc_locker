@@ -41,6 +41,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   go_router: ^17.0.1
   flutter_dotenv: ^6.0.0
+  my_toastify: ^1.1.2
 
 dev_dependencies:
   flutter_test:

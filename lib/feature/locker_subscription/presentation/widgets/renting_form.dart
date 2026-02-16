@@ -7,6 +7,7 @@ import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/sub
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_toastify/my_toastify.dart';
 
 class RentingForm extends StatefulWidget {
   final LockerEntity locker;
@@ -54,9 +55,16 @@ class _RentingFormState extends State<RentingForm> {
     // 👉 Call Bloc / API here
     // context.read<RentCubit>().rentLocker(payload);
 
-    ScaffoldMessenger.of(
+    Toastify.show(
       context,
-    ).showSnackBar(const SnackBar(content: Text("Rent request submitted")));
+      message: 'Request submitted successfully. Please wait for approval.',
+      type: ToastType.success,
+      position: ToastPosition.bottom,
+      style: ToastStyle.banner,
+      leading: const Icon(Icons.check_circle, color: Colors.white),
+    );
+
+    Navigator.pop(context);
   }
 
   @override

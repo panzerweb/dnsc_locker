@@ -15,7 +15,7 @@ class TransactionsPage extends StatelessWidget {
         A dynamic data shall be displayed here
       */
       body: Padding(
-        padding: EdgeInsetsGeometry.all(12),
+        padding: EdgeInsetsGeometry.all(24),
         child: ListView.builder(
           itemCount: 5,
           itemBuilder: (context, index) {

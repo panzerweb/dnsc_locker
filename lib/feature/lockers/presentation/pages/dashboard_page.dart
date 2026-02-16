@@ -23,105 +23,107 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppbar(title: 'DNSC LRMS'),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            if (state is AuthLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              if (state is AuthLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            if (state is AuthenticatedUserLoaded) {
-              final user = state.user;
-              print("You loaded dashboard");
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  HeaderSection(user: user),
+              if (state is AuthenticatedUserLoaded) {
+                final user = state.user;
+                print("You loaded dashboard");
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    HeaderSection(user: user),
 
-                  const SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                  /* 
+                    /* 
+        
+                      Widget for accepting if the locker subscription
+                      is active or not
+        
+                      Shall accepts params in the future like:
+        
+                        ActiveIndicatorRow(status: subStatus)
+        
+                      Where subStatus is an Entity with an API response
+        
+                    */
+                    ActiveIndicatorRow(),
 
-                    Widget for accepting if the locker subscription
-                    is active or not
+                    const SizedBox(height: 12),
 
-                    Shall accepts params in the future like:
+                    /*
+        
+                      Widget for the current active locker subscription
+                      of the user.
+        
+                      Shows conditional rendering that if there is an active
+                      subscription, then show Widget()
+        
+                      Else, show anotherWidget or pass a condition in the same
+                      Widget
+        
+                    */
+                    ActiveLockerCard(),
 
-                      ActiveIndicatorRow(status: subStatus)
+                    const SizedBox(height: 12),
 
-                    Where subStatus is an Entity with an API response
+                    /*
+        
+                      Widgets for related data that must be shown
+                      within the app such as rent fee of the current
+                      locker subscription or the current academic year.
+        
+                      You can add more if you want.
+        
+                      If no data is shown, you can pass conditionally
+                      render a widget or pass a conditional rendering
+                      on the same widget itself
+        
+                    */
+                    GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 1.6,
+                      children: [
+                        RelatedDetailCard(
+                          icon: Icons.payment_outlined,
+                          label: 'Total Balance',
+                          data: '100.00',
+                          backgroundColorPalette: Palette.accentColor,
+                          onTapped: null,
+                        ),
+                        RelatedDetailCard(
+                          icon: Icons.info,
+                          label: 'Issues',
+                          data: '0 issues',
+                          backgroundColorPalette: Palette.secondaryColor,
+                          onTapped: () {
+                            context.push('/dashboard/issues/');
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
 
-                  */
-                  ActiveIndicatorRow(),
+              if (state is AuthError) {
+                return AuthUserError(message: state.message);
+              }
 
-                  const SizedBox(height: 12),
-
-                  /*
-
-                    Widget for the current active locker subscription
-                    of the user.
-
-                    Shows conditional rendering that if there is an active
-                    subscription, then show Widget()
-
-                    Else, show anotherWidget or pass a condition in the same
-                    Widget
-
-                  */
-                  ActiveLockerCard(),
-
-                  const SizedBox(height: 12),
-
-                  /*
-
-                    Widgets for related data that must be shown
-                    within the app such as rent fee of the current
-                    locker subscription or the current academic year.
-
-                    You can add more if you want.
-
-                    If no data is shown, you can pass conditionally
-                    render a widget or pass a conditional rendering
-                    on the same widget itself
-
-                  */
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 1.6,
-                    children: [
-                      RelatedDetailCard(
-                        icon: Icons.payment_outlined,
-                        label: 'Total Balance',
-                        data: '100.00',
-                        backgroundColorPalette: Palette.accentColor,
-                        onTapped: null,
-                      ),
-                      RelatedDetailCard(
-                        icon: Icons.info,
-                        label: 'Issues',
-                        data: '0 issues',
-                        backgroundColorPalette: Palette.secondaryColor,
-                        onTapped: () {
-                          context.push('/dashboard/issues/');
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            }
-
-            if (state is AuthError) {
-              return AuthUserError(message: state.message);
-            }
-
-            return const SizedBox.shrink();
-          },
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );

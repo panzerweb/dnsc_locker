@@ -16,7 +16,6 @@ class ActiveLockerCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 🔒 Lock Icon Container
             Container(
               height: 96,
               width: 96,
@@ -33,7 +32,6 @@ class ActiveLockerCard extends StatelessWidget {
 
             const SizedBox(width: 16),
 
-            // 🏷 Locker Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,9 +59,9 @@ class ActiveLockerCard extends StatelessWidget {
               ),
             ),
 
-            // ⚙ Actions
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 IconButton.outlined(
                   onPressed: () {
@@ -75,12 +73,23 @@ class ActiveLockerCard extends StatelessWidget {
                     size: 32,
                   ),
                 ),
+
                 const SizedBox(height: 32),
-                IconButton(
+
+                ElevatedButton.icon(
                   onPressed: () {
                     context.push('/dashboard/submit_issue');
                   },
-                  icon: Icon(Icons.info, color: Palette.darkShadePrimary),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      Palette.secondaryColor,
+                    ),
+                    foregroundColor: WidgetStatePropertyAll(
+                      Palette.lightShadeSecondary,
+                    ),
+                  ),
+                  icon: Icon(Icons.info, size: 24),
+                  label: Text('Report an issue'),
                 ),
               ],
             ),
