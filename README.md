@@ -58,9 +58,9 @@ This project follows **Clean Architecture** principles to keep the codebase orga
 
 If you're new to Clean Architecture, here are great learning resources:
 
-* [https://resocoder.com/flutter-clean-architecture-tdd/](https://resocoder.com/flutter-clean-architecture-tdd/)
-* [https://medium.com/flutter-community/clean-architecture-for-flutter-application-3fb1d1f3c3c4](https://medium.com/flutter-community/clean-architecture-for-flutter-application-3fb1d1f3c3c4)
-* [https://8thlight.com/insights/a-color-coded-guide-to-clean-architecture](https://8thlight.com/insights/a-color-coded-guide-to-clean-architecture)
+* [https://medium.com/@yamen.abd98/clean-architecture-in-flutter-mvvm-bloc-dio-79b1615530e1]
+* [https://docs.flutter.dev/app-architecture/guide#data-layer]
+* [https://dev.to/princetomarappdev/mastering-flutter-architecture-from-clean-to-feature-first-for-faster-scalable-development-4605]
 
 ---
 
