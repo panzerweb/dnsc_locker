@@ -8,6 +8,7 @@ import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_state.dart'
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/browse_page_header_section.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/empty_list_text.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/locker_card.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/locker_filter_dialog.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/auth_user_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,9 +32,13 @@ class _BrowseLockersState extends State<BrowseLockers> {
     context.read<LockerCubit>().loadLockers();
 
     _scrollController.addListener(() {
+      final cubit = context.read<LockerCubit>();
+
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
-        context.read<LockerCubit>().loadLockers();
+        if (!cubit.state.isFiltered) {
+          cubit.loadLockers();
+        }
       }
     });
   }
@@ -43,12 +48,6 @@ class _BrowseLockersState extends State<BrowseLockers> {
     _scrollController.dispose();
     super.dispose();
   }
-
-  /*
-  
-    Dialog for filtering available
-
-  */
 
   /*
     The Widget for the Browse Lockers page
@@ -91,9 +90,12 @@ class _BrowseLockersState extends State<BrowseLockers> {
                             user.institute?.instituteName ?? 'No Institute',
                       ),
 
-                      // Button to select building
+                      // Button to filter lockers base on academic year and semester and building
                       ElevatedButton(
-                        onPressed: null,
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (_) => const LockerFilterDialog(),
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green[900],
                           foregroundColor: Colors.grey[100],
@@ -137,29 +139,54 @@ class _BrowseLockersState extends State<BrowseLockers> {
                             ),
                           );
                         }
+                        if (state.isFiltered == true) {
+                          return ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.only(top: 8),
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: state.hasReachedMax
+                                ? state.lockers.length
+                                : state.lockers.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index >= state.lockers.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
 
-                        return ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.only(top: 8),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: state.hasReachedMax
-                              ? state.lockers.length
-                              : state.lockers.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index >= state.lockers.length) {
-                              return const Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            }
+                              final locker = state.lockers[index];
+                              return LockerCard(locker: locker);
+                            },
+                          );
+                        } else {
+                          return ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.only(top: 8),
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: state.hasReachedMax
+                                ? state.lockers.length
+                                : state.lockers.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index >= state.lockers.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
 
-                            final locker = state.lockers[index];
-                            return LockerCard(locker: locker);
-                          },
-                        );
+                              final locker = state.lockers[index];
+                              return LockerCard(locker: locker);
+                            },
+                          );
+                        }
+
                         // print(buildings);
                       },
                     ),

@@ -13,6 +13,7 @@ import 'package:dnsc_locker/feature/lockers/data/data_sources/lockers_remote_dat
 import 'package:dnsc_locker/feature/lockers/data/data_sources/lockers_remote_data_source_impl.dart';
 import 'package:dnsc_locker/feature/lockers/data/repositories/locker_repository_impl.dart';
 import 'package:dnsc_locker/feature/lockers/domain/repository/locker_repository.dart';
+import 'package:dnsc_locker/feature/lockers/domain/usecases/filter_lockers_use_case.dart';
 import 'package:dnsc_locker/feature/lockers/domain/usecases/get_lockers_use_case.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -111,5 +112,13 @@ void setupLocator() {
   locator.registerLazySingleton(
     () => GetLockersUseCase(locator<LockerRepository>()),
   );
-  locator.registerFactory(() => LockerCubit(getLockersUseCase: locator()));
+  locator.registerLazySingleton(
+    () => FilterLockersUseCase(locator<LockerRepository>()),
+  );
+  locator.registerFactory(
+    () => LockerCubit(
+      getLockersUseCase: locator(),
+      filterLockersUseCase: locator(),
+    ),
+  );
 }

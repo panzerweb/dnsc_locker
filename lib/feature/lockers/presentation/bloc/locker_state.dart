@@ -6,6 +6,7 @@ class LockerState {
   final bool hasReachedMax;
   final int currentPage;
   final bool? error;
+  final bool isFiltered;
 
   const LockerState({
     this.lockers = const [],
@@ -13,6 +14,7 @@ class LockerState {
     this.hasReachedMax = false,
     this.currentPage = 1,
     this.error,
+    this.isFiltered = false,
   });
 
   LockerState copyWith({
@@ -21,6 +23,7 @@ class LockerState {
     bool? hasReachedMax,
     int? currentPage,
     bool? errors,
+    bool? isFiltered,
   }) {
     return LockerState(
       lockers: lockers ?? this.lockers,
@@ -28,6 +31,7 @@ class LockerState {
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       currentPage: currentPage ?? this.currentPage,
       error: errors,
+      isFiltered: isFiltered ?? this.isFiltered,
     );
   }
 }
