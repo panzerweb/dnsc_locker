@@ -22,7 +22,7 @@ class BrowseLockers extends StatefulWidget {
 
 class _BrowseLockersState extends State<BrowseLockers> {
   final _scrollController = ScrollController();
-  List<LockerEntity> filteredLockers = [];
+  List<LockerEntity> lockers = [];
   bool hasSelected = false;
 
   @override

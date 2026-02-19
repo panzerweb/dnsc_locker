@@ -1,7 +1,10 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
+import 'package:dnsc_locker/feature/lockers/domain/entities/building_entity.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 class LockerFilterDialog extends StatefulWidget {
   const LockerFilterDialog({super.key});
@@ -13,16 +16,34 @@ class LockerFilterDialog extends StatefulWidget {
 class _LockerFilterDialogState extends State<LockerFilterDialog> {
   String? selectedYear;
   String? selectedSemester;
-  int? selectedBuilding;
+  BuildingEntity? selectedBuilding;
 
   final academicYears = ["2023-2024", "2024-2025", "2025-2026", "2026-2027"];
   final semesters = ["1st", "2nd"];
   // Fetch buildings from API
-  final buildings = {1: "IC Building"};
+  final buildings = [
+    BuildingEntity(
+      id: 1,
+      schoolName: "Davao del Norte State College",
+      name: "IC Building",
+      maxFloor: 2,
+    ),
+    BuildingEntity(
+      id: 6,
+      schoolName: "Davao del Norte State College",
+      name: "ITED Building",
+      maxFloor: 2,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return GiffyDialog.image(
+      Image.network(
+        "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
+        height: 200,
+        fit: BoxFit.cover,
+      ),
       title: const Text(
         "Available Lockers",
         style: TextStyle(
@@ -36,45 +57,42 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             /// Academic Year
-            DropdownButtonFormField<String>(
-              initialValue: selectedYear,
-              decoration: const InputDecoration(labelText: "Academic Year"),
-              items: academicYears
-                  .map((y) => DropdownMenuItem(value: y, child: Text(y)))
-                  .toList(),
-              onChanged: (val) => setState(() => selectedYear = val),
+            CustomDropdown<String>(
+              hintText: 'Academic Year',
+              items: academicYears,
+              initialItem: selectedYear,
+              onChanged: (value) {
+                setState(() {
+                  selectedYear = value;
+                });
+              },
             ),
-
             const SizedBox(height: 12),
 
             /// Semester
-            DropdownButtonFormField<String>(
-              initialValue: selectedSemester,
-              decoration: const InputDecoration(labelText: "Semester"),
-              items: semesters
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                  .toList(),
-              onChanged: (val) => setState(() => selectedSemester = val),
+            CustomDropdown<String>(
+              hintText: 'Semester',
+              items: semesters,
+              initialItem: selectedSemester,
+              onChanged: (value) {
+                setState(() {
+                  selectedSemester = value;
+                });
+              },
             ),
 
             const SizedBox(height: 12),
 
             /// Building (Optional)
-            DropdownButtonFormField<int>(
-              initialValue: selectedBuilding,
-              decoration: const InputDecoration(
-                labelText: "Building (Optional)",
-              ),
-              items: [
-                const DropdownMenuItem<int>(
-                  value: null,
-                  child: Text("All Buildings"),
-                ),
-                ...buildings.entries.map(
-                  (b) => DropdownMenuItem(value: b.key, child: Text(b.value)),
-                ),
-              ],
-              onChanged: (val) => setState(() => selectedBuilding = val),
+            CustomDropdown<BuildingEntity>(
+              hintText: 'Buildings',
+              items: buildings,
+              initialItem: selectedBuilding,
+              onChanged: (value) {
+                setState(() {
+                  selectedBuilding = value;
+                });
+              },
             ),
           ],
         ),
@@ -97,10 +115,12 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
               );
               return;
             }
-
+            print("Academic Year: $selectedYear");
+            print("Building: ${selectedBuilding?.id}");
+            print("Semester: $selectedSemester");
             context.read<LockerCubit>().loadAvailableLockers(
               academicYear: selectedYear!,
-              building: selectedBuilding,
+              building: selectedBuilding?.id,
               semester: selectedSemester!,
             );
 
