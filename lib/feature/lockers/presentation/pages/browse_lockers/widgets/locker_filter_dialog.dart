@@ -1,6 +1,7 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/lockers/domain/entities/building_entity.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/browse_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
@@ -39,8 +40,8 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
   @override
   Widget build(BuildContext context) {
     return GiffyDialog.image(
-      Image.network(
-        "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
+      Image.asset(
+        "assets/img/background_classroom.jfif",
         height: 200,
         fit: BoxFit.cover,
       ),
@@ -104,11 +105,11 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
             context.read<LockerCubit>().resetAndLoad();
             Navigator.pop(context);
           },
-          child: const Text("Reset"),
+          child: const Text("Reset Filter"),
         ),
 
-        ElevatedButton(
-          onPressed: () {
+        BrowseButton(
+          onSubmitButton: () {
             if (selectedYear == null || selectedSemester == null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Select year & semester")),
@@ -124,9 +125,13 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
               semester: selectedSemester!,
             );
 
-            Navigator.pop(context);
+            Navigator.pop(context, {
+              "academic_year": selectedYear,
+              "building": selectedBuilding?.id,
+              "semester": selectedSemester,
+            });
           },
-          child: const Text("Apply"),
+          stateOnSubmit: Text("Apply"),
         ),
       ],
     );

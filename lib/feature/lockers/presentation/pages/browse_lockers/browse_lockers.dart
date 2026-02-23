@@ -2,7 +2,6 @@ import 'package:dnsc_locker/core/components/main_appbar.dart';
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
-import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_state.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/browse_page_header_section.dart';
@@ -22,14 +21,17 @@ class BrowseLockers extends StatefulWidget {
 
 class _BrowseLockersState extends State<BrowseLockers> {
   final _scrollController = ScrollController();
-  List<LockerEntity> lockers = [];
-  bool hasSelected = false;
+  Map<String, dynamic> filterValues = {
+    "academic_year": "",
+    "building": 0,
+    "semester": "",
+  };
 
   @override
   void initState() {
     super.initState();
 
-    context.read<LockerCubit>().loadLockers();
+    // context.read<LockerCubit>().loadLockers();
 
     _scrollController.addListener(() {
       final cubit = context.read<LockerCubit>();
@@ -92,10 +94,22 @@ class _BrowseLockersState extends State<BrowseLockers> {
 
                       // Button to filter lockers base on academic year and semester and building
                       ElevatedButton(
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (_) => const LockerFilterDialog(),
-                        ),
+                        onPressed: () async {
+                          final dialogResult = await showDialog(
+                            context: context,
+                            builder: (_) => const LockerFilterDialog(),
+                          );
+
+                          if (dialogResult != null) {
+                            setState(() {
+                              filterValues = Map<String, dynamic>.from(
+                                dialogResult,
+                              );
+
+                              print(filterValues);
+                            });
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green[900],
                           foregroundColor: Colors.grey[100],
@@ -126,15 +140,22 @@ class _BrowseLockersState extends State<BrowseLockers> {
                         }
                         if (state.error == true) {
                           return const Center(
-                            child: Text("Something is wrong fetching lockers"),
+                            child: EmptyListText(
+                              title: 'Something is wrong!',
+                              message:
+                                  'Check your internet connection or contact admin for info.',
+                              icon: Icons.apartment,
+                            ),
                           );
                         }
 
-                        if (state.lockers.isEmpty) {
+                        if (state.lockers.isEmpty &&
+                            state.isFiltered == false) {
                           return const Center(
                             child: EmptyListText(
                               title: 'No Lockers',
-                              message: 'There are no available lockers',
+                              message:
+                                  'Select some filter options to view lockers',
                               icon: Icons.apartment,
                             ),
                           );
@@ -159,31 +180,17 @@ class _BrowseLockersState extends State<BrowseLockers> {
                               }
 
                               final locker = state.lockers[index];
-                              return LockerCard(locker: locker);
+                              return LockerCard(
+                                locker: locker,
+                                filterValues: filterValues,
+                              );
                             },
                           );
                         } else {
-                          return ListView.builder(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.only(top: 8),
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: state.hasReachedMax
-                                ? state.lockers.length
-                                : state.lockers.length + 1,
-                            itemBuilder: (context, index) {
-                              if (index >= state.lockers.length) {
-                                return const Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-
-                              final locker = state.lockers[index];
-                              return LockerCard(locker: locker);
-                            },
+                          return EmptyListText(
+                            title: 'Found Nothing!',
+                            message: 'Failed to return lockers.',
+                            icon: Icons.apartment,
                           );
                         }
 

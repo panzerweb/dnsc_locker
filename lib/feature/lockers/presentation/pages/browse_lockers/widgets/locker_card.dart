@@ -5,7 +5,13 @@ import 'package:go_router/go_router.dart';
 
 class LockerCard extends StatelessWidget {
   final LockerEntity locker;
-  const LockerCard({super.key, required this.locker});
+  final Map<String, dynamic> filterValues;
+  // Filtered fields such as Academic Year
+  const LockerCard({
+    super.key,
+    required this.locker,
+    required this.filterValues,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +89,10 @@ class LockerCard extends StatelessWidget {
             IconButton(
               onPressed: () {
                 locker.isActive != false
-                    ? context.push('/browse/locker/${locker.id}')
+                    ? context.push(
+                        '/browse/locker/${locker.id}',
+                        extra: filterValues,
+                      )
                     : null;
               },
               icon: locker.isActive != false

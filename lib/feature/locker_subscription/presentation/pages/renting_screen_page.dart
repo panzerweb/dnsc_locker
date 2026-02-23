@@ -7,7 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RentingScreenPage extends StatelessWidget {
   final String lockerId;
-  const RentingScreenPage({super.key, required this.lockerId});
+  final Map<String, dynamic> filters;
+
+  const RentingScreenPage({
+    super.key,
+    required this.lockerId,
+    required this.filters,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,7 @@ class RentingScreenPage extends StatelessWidget {
         builder: (context, state) {
           for (var locker in state.lockers) {
             if (locker.id == int.tryParse(lockerId)) {
-              return RentingForm(locker: locker);
+              return RentingForm(locker: locker, filters: filters);
             }
           }
 

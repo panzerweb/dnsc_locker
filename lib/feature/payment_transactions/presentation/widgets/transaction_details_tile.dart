@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 class TransactionDetailsTile extends StatelessWidget {
   final Widget leading;
   final String title;
-  final String subtitle;
+  final String amountPaid;
+  final String currentBalance;
   final Widget? trailing;
 
   const TransactionDetailsTile({
     super.key,
     required this.leading,
     required this.title,
-    required this.subtitle,
+    required this.amountPaid,
+    required this.currentBalance,
     this.trailing,
   });
 
@@ -37,7 +39,7 @@ class TransactionDetailsTile extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          subtitle,
+          "You have paid the amount of $amountPaid, your balance is now $currentBalance",
           style: const TextStyle(
             color: Palette.darkShadeSecondary,
             fontSize: 14,

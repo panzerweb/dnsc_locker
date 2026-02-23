@@ -8,6 +8,9 @@ class TransactionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String amountPaid = "50";
+    final String currentBalance = "100";
+
     return Scaffold(
       appBar: MainAppbar(title: 'Transactions'),
       /*
@@ -15,15 +18,15 @@ class TransactionsPage extends StatelessWidget {
         A dynamic data shall be displayed here
       */
       body: Padding(
-        padding: EdgeInsetsGeometry.all(24),
+        padding: EdgeInsetsGeometry.all(16),
         child: ListView.builder(
           itemCount: 5,
           itemBuilder: (context, index) {
             return TransactionDetailsTile(
               leading: Icon(Icons.payment_rounded),
               title: 'Locker Payment',
-              subtitle:
-                  'You have paid Php 50.00, your balance is now Php 100.00',
+              amountPaid: amountPaid,
+              currentBalance: currentBalance,
               trailing: Text("Feb 15, 2026"),
             );
           },

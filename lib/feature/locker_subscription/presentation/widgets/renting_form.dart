@@ -11,7 +11,8 @@ import 'package:my_toastify/my_toastify.dart';
 
 class RentingForm extends StatefulWidget {
   final LockerEntity locker;
-  const RentingForm({super.key, required this.locker});
+  final Map<String, dynamic> filters;
+  const RentingForm({super.key, required this.locker, required this.filters});
 
   @override
   State<RentingForm> createState() => _RentingFormState();
@@ -21,24 +22,20 @@ class _RentingFormState extends State<RentingForm> {
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _academicYearController;
-
-  String? _semester;
+  late final TextEditingController _semesterController;
   final bool _isSubmitting = false;
-
-  final semesters = ["1st", "2nd"];
 
   @override
   void initState() {
     _academicYearController = TextEditingController(
-      text: _defaultAcademicYear(),
+      text: widget.filters['academic_year'],
+    );
+
+    _semesterController = TextEditingController(
+      text: widget.filters['semester'],
     );
 
     super.initState();
-  }
-
-  String _defaultAcademicYear() {
-    final year = DateTime.now().year;
-    return "$year-${year + 1}";
   }
 
   void _submit() {
@@ -47,7 +44,7 @@ class _RentingFormState extends State<RentingForm> {
     final payload = {
       "locker": widget.locker.id, // important for API
       "acedemic_year": _academicYearController.text,
-      "semester": _semester,
+      "semester": _semesterController.text,
     };
 
     print("POST Payload → $payload");
@@ -101,7 +98,7 @@ class _RentingFormState extends State<RentingForm> {
               child: Column(
                 children: [
                   Text(
-                    "Fill the details below",
+                    "Review your details below",
                     style: TextStyle(
                       color: Palette.darkShadePrimary,
                       fontSize: 16,
@@ -188,75 +185,90 @@ class _RentingFormState extends State<RentingForm> {
 
             const SizedBox(height: 16),
 
-            /// Academic Year
-            Text(
-              "Academic Year",
-              style: TextStyle(
-                color: Palette.accentColor,
-                fontWeight: FontWeight.w600,
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    "Duration details",
+                    style: TextStyle(
+                      color: Palette.darkShadePrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  Text(
+                    "Filtered values from earlier are now prefilled in the fields.",
+                    style: TextStyle(color: Palette.darkShadeSecondary),
+                  ),
+
+                  Divider(color: Palette.darkShadeSecondary, thickness: 2),
+
+                  /// Academic Year
+                  Text(
+                    "Academic Year",
+                    style: TextStyle(
+                      color: Palette.accentColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  SubscriptionTextField(
+                    fieldController: _academicYearController,
+                    label: 'Academic Year',
+                    readOnly: true,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Enter academic year";
+                      }
+
+                      // Match YYYY-YYYY
+                      final regex = RegExp(r'^\d{4}-\d{4}$');
+                      if (!regex.hasMatch(value)) {
+                        return "Format must be YYYY-YYYY";
+                      }
+
+                      final parts = value.split("-");
+                      final startYear = int.tryParse(parts[0]);
+                      final endYear = int.tryParse(parts[1]);
+
+                      if (startYear == null || endYear == null) {
+                        return "Invalid year format";
+                      }
+
+                      if (endYear != startYear + 1) {
+                        return "Academic year must be consecutive (e.g. 2025-2026)";
+                      }
+
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Text(
+                    "Semester",
+                    style: TextStyle(
+                      color: Palette.accentColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  /// Semester Dropdown
+                  SubscriptionTextField(
+                    fieldController: _semesterController,
+                    label: "Semester",
+                    readOnly: true,
+                  ),
+                ],
               ),
             ),
 
-            const SizedBox(height: 8),
-
-            SubscriptionTextField(
-              fieldController: _academicYearController,
-              label: 'Academic Year',
-              readOnly: false,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return "Enter academic year";
-                }
-
-                // Match YYYY-YYYY
-                final regex = RegExp(r'^\d{4}-\d{4}$');
-                if (!regex.hasMatch(value)) {
-                  return "Format must be YYYY-YYYY";
-                }
-
-                final parts = value.split("-");
-                final startYear = int.tryParse(parts[0]);
-                final endYear = int.tryParse(parts[1]);
-
-                if (startYear == null || endYear == null) {
-                  return "Invalid year format";
-                }
-
-                if (endYear != startYear + 1) {
-                  return "Academic year must be consecutive (e.g. 2025-2026)";
-                }
-
-                return null;
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            Text(
-              "Semester",
-              style: TextStyle(
-                color: Palette.accentColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            /// Semester Dropdown
-            DropdownButtonFormField<String>(
-              initialValue: _semester ?? '1st',
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-              ),
-              items: semesters
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                  .toList(),
-              onChanged: (value) => setState(() => _semester = value),
-              validator: (value) => value == null ? "Select semester" : null,
-            ),
+            Divider(color: Palette.darkShadeSecondary, thickness: 2),
 
             const SizedBox(height: 24),
 
@@ -273,3 +285,18 @@ class _RentingFormState extends State<RentingForm> {
     );
   }
 }
+
+            // DropdownButtonFormField<String>(
+            //   initialValue: _semester ?? '1st',
+            //   decoration: InputDecoration(
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(12),
+            //     ),
+            //     floatingLabelBehavior: FloatingLabelBehavior.never,
+            //   ),
+            //   items: semesters
+            //       .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+            //       .toList(),
+            //   onChanged: (value) => setState(() => _semester = value),
+            //   validator: (value) => value == null ? "Select semester" : null,
+            // ),

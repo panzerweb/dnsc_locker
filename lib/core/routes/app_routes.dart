@@ -107,9 +107,15 @@ final GoRouter router = GoRouter(
           routes: <GoRoute>[
             GoRoute(
               path: 'locker/:lockerId',
-              builder: (context, state) => RentingScreenPage(
-                lockerId: state.pathParameters['lockerId']!,
-              ),
+              builder: (context, state) {
+                final Map<String, dynamic> args =
+                    state.extra as Map<String, dynamic>;
+
+                return RentingScreenPage(
+                  lockerId: state.pathParameters['lockerId']!,
+                  filters: args,
+                );
+              },
             ),
           ],
         ),
