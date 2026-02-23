@@ -1,4 +1,5 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
+import 'package:dnsc_locker/feature/auth/domain/entities/user_entity.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/sub_details_tile.dart';
@@ -20,20 +21,14 @@ class RentingForm extends StatefulWidget {
 
 class _RentingFormState extends State<RentingForm> {
   final _formKey = GlobalKey<FormState>();
-
-  late final TextEditingController _academicYearController;
-  late final TextEditingController _semesterController;
+  String academicYear = '';
+  String semesterValue = '';
   final bool _isSubmitting = false;
 
   @override
   void initState() {
-    _academicYearController = TextEditingController(
-      text: widget.filters['academic_year'],
-    );
-
-    _semesterController = TextEditingController(
-      text: widget.filters['semester'],
-    );
+    academicYear = widget.filters['academic_year'];
+    semesterValue = widget.filters['semester'];
 
     super.initState();
   }
@@ -43,8 +38,8 @@ class _RentingFormState extends State<RentingForm> {
 
     final payload = {
       "locker": widget.locker.id, // important for API
-      "acedemic_year": _academicYearController.text,
-      "semester": _semesterController.text,
+      "acedemic_year": academicYear,
+      "semester": semesterValue,
     };
 
     print("POST Payload → $payload");
@@ -122,8 +117,42 @@ class _RentingFormState extends State<RentingForm> {
                       }
 
                       if (state is AuthenticatedUserLoaded) {
-                        final user = state.user;
+                        final UserEntity user = state.user;
+                        // Handling of user details
+                        final String? firstName = user.student?.firstName;
+                        final String? lastName = user.student?.lastName;
+                        final String? suffixName = user.student?.suffix;
+                        final String? studentId =
+                            user.student?.studentId ?? 'Not Set';
+                        final String? studentProgram =
+                            user.student?.programName;
+                        final String? studentYear = user.student?.studentLevel
+                            .toString();
+                        final String? studentSet = user.student?.studentSet;
 
+                        final studentNameParts =
+                            [firstName, lastName, suffixName]
+                                .where(
+                                  (name) =>
+                                      name != null && name.trim().isNotEmpty,
+                                )
+                                .toList();
+                        final studentDetailPart =
+                            [studentProgram, studentYear, studentSet].where(
+                              (detail) =>
+                                  detail != null && detail.trim().isNotEmpty,
+                            );
+
+                        final fullName = studentNameParts.isEmpty
+                            ? "Not Set"
+                            : studentNameParts.join(" ");
+
+                        final studentProgramYearLevel =
+                            studentDetailPart.isEmpty
+                            ? "Not Set"
+                            : studentDetailPart.join(" ");
+
+                        // User Interface
                         return Padding(
                           padding: EdgeInsetsGeometry.fromLTRB(8, 0, 8, 0),
                           child: Column(
@@ -140,7 +169,10 @@ class _RentingFormState extends State<RentingForm> {
                                   ),
                                 ),
                                 subtitle: Text(
-                                  "${user.student?.firstName} ${user.student?.lastName} ${user.student?.suffix}",
+                                  fullName,
+                                  style: TextStyle(
+                                    color: Palette.darkShadeSecondary,
+                                  ),
                                 ),
                               ),
                               ListTile(
@@ -153,7 +185,12 @@ class _RentingFormState extends State<RentingForm> {
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                subtitle: Text("${user.student?.studentId}"),
+                                subtitle: Text(
+                                  "$studentId",
+                                  style: TextStyle(
+                                    color: Palette.darkShadeSecondary,
+                                  ),
+                                ),
                               ),
                               ListTile(
                                 leading: Icon(Icons.school_sharp),
@@ -166,7 +203,44 @@ class _RentingFormState extends State<RentingForm> {
                                   ),
                                 ),
                                 subtitle: Text(
-                                  "${user.student?.programName} ${user.student?.studentLevel}${user.student?.studentSet}",
+                                  studentProgramYearLevel,
+                                  style: TextStyle(
+                                    color: Palette.darkShadeSecondary,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.calendar_month),
+                                title: Text(
+                                  "Academic Year",
+                                  style: TextStyle(
+                                    color: Palette.darkShadePrimary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  academicYear,
+                                  style: TextStyle(
+                                    color: Palette.darkShadeSecondary,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.timelapse_sharp),
+                                title: Text(
+                                  "Semester",
+                                  style: TextStyle(
+                                    color: Palette.darkShadePrimary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  semesterValue,
+                                  style: TextStyle(
+                                    color: Palette.darkShadeSecondary,
+                                  ),
                                 ),
                               ),
                             ],
@@ -183,93 +257,6 @@ class _RentingFormState extends State<RentingForm> {
               ),
             ),
 
-            const SizedBox(height: 16),
-
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    "Duration details",
-                    style: TextStyle(
-                      color: Palette.darkShadePrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-
-                  Text(
-                    "Filtered values from earlier are now prefilled in the fields.",
-                    style: TextStyle(color: Palette.darkShadeSecondary),
-                  ),
-
-                  Divider(color: Palette.darkShadeSecondary, thickness: 2),
-
-                  /// Academic Year
-                  Text(
-                    "Academic Year",
-                    style: TextStyle(
-                      color: Palette.accentColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  SubscriptionTextField(
-                    fieldController: _academicYearController,
-                    label: 'Academic Year',
-                    readOnly: true,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Enter academic year";
-                      }
-
-                      // Match YYYY-YYYY
-                      final regex = RegExp(r'^\d{4}-\d{4}$');
-                      if (!regex.hasMatch(value)) {
-                        return "Format must be YYYY-YYYY";
-                      }
-
-                      final parts = value.split("-");
-                      final startYear = int.tryParse(parts[0]);
-                      final endYear = int.tryParse(parts[1]);
-
-                      if (startYear == null || endYear == null) {
-                        return "Invalid year format";
-                      }
-
-                      if (endYear != startYear + 1) {
-                        return "Academic year must be consecutive (e.g. 2025-2026)";
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  Text(
-                    "Semester",
-                    style: TextStyle(
-                      color: Palette.accentColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  /// Semester Dropdown
-                  SubscriptionTextField(
-                    fieldController: _semesterController,
-                    label: "Semester",
-                    readOnly: true,
-                  ),
-                ],
-              ),
-            ),
-
-            Divider(color: Palette.darkShadeSecondary, thickness: 2),
-
             const SizedBox(height: 24),
 
             /// Submit Button
@@ -285,18 +272,109 @@ class _RentingFormState extends State<RentingForm> {
     );
   }
 }
+/*
 
-            // DropdownButtonFormField<String>(
-            //   initialValue: _semester ?? '1st',
-            //   decoration: InputDecoration(
-            //     border: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(12),
-            //     ),
-            //     floatingLabelBehavior: FloatingLabelBehavior.never,
-            //   ),
-            //   items: semesters
-            //       .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-            //       .toList(),
-            //   onChanged: (value) => setState(() => _semester = value),
-            //   validator: (value) => value == null ? "Select semester" : null,
-            // ),
+  The code below is still not yet necessary so I deprecated it.
+  However, if this will be necessary in the future, then implement
+  the textfield
+
+*/
+// DropdownButtonFormField<String>(
+//   initialValue: _semester ?? '1st',
+//   decoration: InputDecoration(
+//     border: OutlineInputBorder(
+//       borderRadius: BorderRadius.circular(12),
+//     ),
+//     floatingLabelBehavior: FloatingLabelBehavior.never,
+//   ),
+//   items: semesters
+//       .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+//       .toList(),
+//   onChanged: (value) => setState(() => _semester = value),
+//   validator: (value) => value == null ? "Select semester" : null,
+// ),
+
+// Center(
+//   child: Column(
+//     children: [
+//       Text(
+//         "Duration details",
+//         style: TextStyle(
+//           color: Palette.darkShadePrimary,
+//           fontSize: 16,
+//           fontWeight: FontWeight.w600,
+//         ),
+//       ),
+
+//       Text(
+//         "Filtered values from earlier are now prefilled in the fields.",
+//         style: TextStyle(color: Palette.darkShadeSecondary),
+//       ),
+
+//       Divider(color: Palette.darkShadeSecondary, thickness: 2),
+
+//       /// Academic Year
+//       Text(
+//         "Academic Year",
+//         style: TextStyle(
+//           color: Palette.accentColor,
+//           fontWeight: FontWeight.w600,
+//         ),
+//         textAlign: TextAlign.start,
+//       ),
+
+//       const SizedBox(height: 8),
+
+//       SubscriptionTextField(
+//         fieldController: _academicYearController,
+//         label: 'Academic Year',
+//         readOnly: true,
+//         validator: (value) {
+//           if (value == null || value.trim().isEmpty) {
+//             return "Enter academic year";
+//           }
+
+//           // Match YYYY-YYYY
+//           final regex = RegExp(r'^\d{4}-\d{4}$');
+//           if (!regex.hasMatch(value)) {
+//             return "Format must be YYYY-YYYY";
+//           }
+
+//           final parts = value.split("-");
+//           final startYear = int.tryParse(parts[0]);
+//           final endYear = int.tryParse(parts[1]);
+
+//           if (startYear == null || endYear == null) {
+//             return "Invalid year format";
+//           }
+
+//           if (endYear != startYear + 1) {
+//             return "Academic year must be consecutive (e.g. 2025-2026)";
+//           }
+
+//           return null;
+//         },
+//       ),
+
+//       const SizedBox(height: 16),
+
+//       Text(
+//         "Semester",
+//         style: TextStyle(
+//           color: Palette.accentColor,
+//           fontWeight: FontWeight.w600,
+//         ),
+//         textAlign: TextAlign.start,
+//       ),
+
+//       const SizedBox(height: 8),
+
+//       /// Semester Dropdown
+//       SubscriptionTextField(
+//         fieldController: _semesterController,
+//         label: "Semester",
+//         readOnly: true,
+//       ),
+//     ],
+//   ),
+// ),
