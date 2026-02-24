@@ -7,6 +7,7 @@ import 'package:dnsc_locker/feature/lockers/presentation/widgets/active_locker_c
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/auth_user_error.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/header_section.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/related_detail_card.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/widgets/services_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -35,26 +36,11 @@ class _DashboardPageState extends State<DashboardPage> {
               if (state is AuthenticatedUserLoaded) {
                 final user = state.user;
                 print("You loaded dashboard");
+                print(user);
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HeaderSection(user: user),
-
-                    const SizedBox(height: 12),
-
-                    /* 
-        
-                      Widget for accepting if the locker subscription
-                      is active or not
-        
-                      Shall accepts params in the future like:
-        
-                        ActiveIndicatorRow(status: subStatus)
-        
-                      Where subStatus is an Entity with an API response
-        
-                    */
-                    ActiveIndicatorRow(),
 
                     const SizedBox(height: 12),
 
@@ -68,18 +54,17 @@ class _DashboardPageState extends State<DashboardPage> {
         
                       Else, show anotherWidget or pass a condition in the same
                       Widget
+
+                      Update: Will show the total balance, what locker is
         
                     */
                     ActiveLockerCard(),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
 
                     /*
         
-                      Widgets for related data that must be shown
-                      within the app such as rent fee of the current
-                      locker subscription or the current academic year.
-        
+                      Widgets for different services of the application.
                       You can add more if you want.
         
                       If no data is shown, you can pass conditionally
@@ -87,28 +72,58 @@ class _DashboardPageState extends State<DashboardPage> {
                       on the same widget itself
         
                     */
+                    Text(
+                      "Services",
+                      style: TextStyle(
+                        color: Palette.darkShadePrimary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
                     GridView.count(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
+                      crossAxisCount: 3,
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
                       childAspectRatio: 1.6,
                       children: [
-                        RelatedDetailCard(
-                          icon: Icons.payment_outlined,
-                          label: 'Total Balance',
-                          data: '100.00',
-                          backgroundColorPalette: Palette.accentColor,
-                          onTapped: null,
+                        ServicesCard(
+                          label: "Payment",
+                          icon: Icons.payment,
+                          onTapped: () {
+                            print("Go to Payment Service");
+                          },
                         ),
-                        RelatedDetailCard(
-                          icon: Icons.info,
-                          label: 'Issues',
-                          data: '0 issues',
-                          backgroundColorPalette: Palette.secondaryColor,
+                        ServicesCard(
+                          label: "Reports",
+                          icon: Icons.article,
                           onTapped: () {
                             context.push('/dashboard/issues/');
+                          },
+                        ),
+                        ServicesCard(
+                          label: "Analytics",
+                          icon: Icons.analytics,
+                          onTapped: () {
+                            print("Go to Analytics Service");
+                          },
+                        ),
+                        ServicesCard(
+                          label: "Requests",
+                          icon: Icons.file_upload,
+                          onTapped: () {
+                            print("Go to Request Service");
+                          },
+                        ),
+                        ServicesCard(
+                          label: "Portal",
+                          icon: Icons.person_4_rounded,
+                          onTapped: () {
+                            print("Go to Student Portal");
                           },
                         ),
                       ],

@@ -8,12 +8,13 @@ class ActiveIndicatorRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       spacing: 6,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(Icons.circle, color: Colors.green),
         Text(
           "Paid & Active",
           style: TextStyle(
-            color: Palette.darkShadePrimary,
+            color: Palette.lightShadeSecondary,
             fontWeight: FontWeight.w600,
           ),
         ),

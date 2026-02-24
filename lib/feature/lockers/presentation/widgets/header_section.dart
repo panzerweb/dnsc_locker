@@ -17,17 +17,6 @@ class HeaderSection extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Palette.lightShadePrimary,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 12,
-            color: Colors.black.withValues(alpha: 0.05),
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -52,50 +41,52 @@ class HeaderSection extends StatelessWidget {
                 const SizedBox(width: 16),
 
                 /// Text Info
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Welcome back, $userFirstName 👋",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Palette.darkShadePrimary,
-                      ),
-                    ),
-
-                    const SizedBox(height: 4),
-
-                    Text(
-                      instituteDetailName,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Palette.darkShadeSecondary,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    /// Student ID badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Palette.secondaryColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        "ID: $userStudentId",
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Welcome back, $userFirstName 👋",
                         style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Palette.secondaryColor,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Palette.darkShadePrimary,
                         ),
                       ),
-                    ),
-                  ],
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        instituteDetailName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Palette.darkShadeSecondary,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      /// Student ID badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Palette.secondaryColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          "ID: $userStudentId",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Palette.secondaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
