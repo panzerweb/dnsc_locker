@@ -134,8 +134,10 @@ class _BrowseLockersState extends State<BrowseLockers> {
                     child: BlocBuilder<LockerCubit, LockerState>(
                       builder: (context, state) {
                         if (state.isLoading && state.lockers.isEmpty) {
-                          return const CircularProgressIndicator(
-                            color: Palette.accentColor,
+                          return Center(
+                            child: const CircularProgressIndicator(
+                              color: Palette.accentColor,
+                            ),
                           );
                         }
                         if (state.error == true) {

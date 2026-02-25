@@ -1,9 +1,9 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:flutter/material.dart';
 
-class BrowsePageHeaderSection extends StatelessWidget {
+class TransactionPageHeaderSection extends StatelessWidget {
   final String? instituteDetailName;
-  const BrowsePageHeaderSection({super.key, this.instituteDetailName});
+  const TransactionPageHeaderSection({super.key, this.instituteDetailName});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class BrowsePageHeaderSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Browse Lockers",
+          "Transaction History",
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -20,7 +20,7 @@ class BrowsePageHeaderSection extends StatelessWidget {
           ),
         ),
         Text(
-          instituteDetailName ?? 'Not Set',
+          instituteDetailName ?? '',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,

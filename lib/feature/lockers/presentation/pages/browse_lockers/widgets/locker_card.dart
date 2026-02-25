@@ -39,9 +39,9 @@ class LockerCard extends StatelessWidget {
                   ? Icon(
                       Icons.check_circle_outline_rounded,
                       size: 24,
-                      color: Colors.yellow[800],
+                      color: Colors.green[800],
                     )
-                  : Icon(Icons.lock, size: 24, color: Colors.yellow[800]),
+                  : Icon(Icons.lock, size: 24, color: Colors.green[800]),
             ),
 
             const SizedBox(width: 12),
