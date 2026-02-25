@@ -111,7 +111,7 @@ class ActiveLockerCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
+                    Flexible(
                       child: DashboardButtons(
                         buttonPressed: () {
                           // Pass the id I think of the current_subscription
@@ -131,7 +131,7 @@ class ActiveLockerCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
+                    Flexible(
                       child: DashboardButtons(
                         buttonPressed: () {
                           // Pass the id I think of the the current locker

@@ -1,11 +1,10 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:dnsc_locker/core/constant/api_path.dart';
+import 'package:dnsc_locker/core/constant/auth_error_state.dart';
 import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:dnsc_locker/feature/auth/data/data_source/auth_remote_datasource.dart';
 import 'package:dnsc_locker/feature/auth/data/models/user_model.dart';
-import 'package:flutter/widgets.dart';
 
 class AuthRemoteDatasourceimpl implements AuthRemoteDatasource {
   final Dio dio;
@@ -32,11 +31,17 @@ class AuthRemoteDatasourceimpl implements AuthRemoteDatasource {
         return true;
       }
 
-      return false;
-    } on DioException catch (e, stack) {
-      print('Login failed: $e');
-      debugPrintStack(stackTrace: stack);
-      return false;
+      throw InvalidCredentialsFailure();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.unknown) {
+        throw NetworkFailure();
+      }
+      if (e.response?.statusCode == 401) {
+        throw InvalidCredentialsFailure();
+      }
+
+      throw AuthErrorState("Server error");
     }
   }
 
@@ -85,8 +90,10 @@ class AuthRemoteDatasourceimpl implements AuthRemoteDatasource {
 
       return UserModel.fromJson(data);
     } on DioException catch (e) {
-      print('Fetching user profile failed: ${e.response?.data}');
-      return null;
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw NetworkFailure();
+      }
+      throw AuthErrorState("Fetching user profile failed: ${e.response?.data}");
     }
   }
 }

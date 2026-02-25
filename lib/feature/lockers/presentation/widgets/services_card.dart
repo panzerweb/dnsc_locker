@@ -23,7 +23,7 @@ class ServicesCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Icon(icon, color: Palette.accentColor, size: 28),
+            Icon(icon, color: Palette.accentColor, size: 36),
             Text(
               label,
               style: TextStyle(
