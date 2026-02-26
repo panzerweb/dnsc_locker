@@ -1,4 +1,4 @@
-import 'package:dnsc_locker/core/constant/auth_error_state.dart';
+import 'package:dnsc_locker/core/errors/auth_error_state.dart';
 import 'package:dnsc_locker/core/services/service_locator.dart';
 import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/current_user_use_case.dart';

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dnsc_locker/core/constant/api_path.dart';
-import 'package:dnsc_locker/core/constant/auth_error_state.dart';
+import 'package:dnsc_locker/core/errors/auth_error_state.dart';
 import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:dnsc_locker/feature/auth/data/data_source/auth_remote_datasource.dart';
 import 'package:dnsc_locker/feature/auth/data/models/user_model.dart';
