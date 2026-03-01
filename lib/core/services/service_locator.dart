@@ -102,6 +102,8 @@ void setupLocator() {
 
   /*
     [Other feature registry below]
+
+    Lockers Registry
   */
   locator.registerLazySingleton<LockersRemoteDataSource>(
     () => LockersRemoteDataSourceImpl(locator<Dio>()),
@@ -121,4 +123,8 @@ void setupLocator() {
       filterLockersUseCase: locator(),
     ),
   );
+
+  /*
+    Locker Request Submission Registry
+  */
 }

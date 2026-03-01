@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 
-class SubscriptionTextField extends StatelessWidget {
+class UniversalTextField extends StatelessWidget {
   final TextEditingController fieldController;
   final String label;
   final String? Function(String?)? validator;
   final bool hideText;
   final bool readOnly;
 
-  const SubscriptionTextField({
+  /// Textarea options
+  final bool expanding;
+  final int? maxLines;
+  final int? minLines;
+
+  const UniversalTextField({
     super.key,
     required this.fieldController,
     required this.label,
     this.validator,
     this.hideText = false,
-    required this.readOnly,
+    this.readOnly = false,
+    this.expanding = false,
+    this.maxLines = 1,
+    this.minLines,
   });
 
   @override
@@ -22,12 +30,18 @@ class SubscriptionTextField extends StatelessWidget {
       controller: fieldController,
       obscureText: hideText,
       readOnly: readOnly,
+      validator: validator,
+
+      /// Important textarea logic
+      expands: expanding,
+      maxLines: expanding ? null : maxLines,
+      minLines: expanding ? null : minLines,
+
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+        alignLabelWithHint: true, // fixes label position for textarea
       ),
-      validator: validator,
     );
   }
 }

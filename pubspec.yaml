@@ -45,6 +45,7 @@ dependencies:
   giffy_dialog: ^2.3.0
   animated_custom_dropdown: 3.1.1
   shared_preferences: ^2.5.4
+  email_validator: '^2.1.17'
 
 dev_dependencies:
   flutter_test:

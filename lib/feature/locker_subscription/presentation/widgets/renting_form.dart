@@ -4,7 +4,6 @@ import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/sub_details_tile.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/subscription_button.dart';
-import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/subscription_text_field.dart';
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
