@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dnsc_locker/core/components/main_appbar.dart';
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
@@ -11,6 +13,7 @@ import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/wi
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/auth_user_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BrowseLockers extends StatefulWidget {
   const BrowseLockers({super.key});
@@ -25,11 +28,13 @@ class _BrowseLockersState extends State<BrowseLockers> {
     "academic_year": "",
     "building": 0,
     "semester": "",
+    "building_name": "",
   };
 
   @override
   void initState() {
     super.initState();
+    _loadFilterValues();
 
     // context.read<LockerCubit>().loadLockers();
 
@@ -49,6 +54,46 @@ class _BrowseLockersState extends State<BrowseLockers> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<Map<String, dynamic>> _getFilterValuesMap() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('filter_values');
+    if (jsonString != null) {
+      return json.decode(jsonString) as Map<String, dynamic>;
+    }
+    return {};
+  }
+
+  Future<void> _saveFilterValues(Map<String, dynamic> filters) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = json.encode(filters);
+
+    await prefs.setString('filter_values', jsonString);
+  }
+
+  Future<void> _loadFilterValues() async {
+    final map = await _getFilterValuesMap();
+
+    if (!mounted) return;
+
+    setState(() {
+      filterValues = {
+        "academic_year": "",
+        "building": 0,
+        "semester": "",
+        "building_name": "",
+        ...map, // override defaults
+      };
+    });
+
+    if (map.isNotEmpty && map["academic_year"] != "" && map["semester"] != "") {
+      context.read<LockerCubit>().loadAvailableLockers(
+        academicYear: map["academic_year"],
+        building: map["building"],
+        semester: map["semester"],
+      );
+    }
   }
 
   /*
@@ -82,6 +127,7 @@ class _BrowseLockersState extends State<BrowseLockers> {
                 */
 
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,6 +152,8 @@ class _BrowseLockersState extends State<BrowseLockers> {
                                 dialogResult,
                               );
 
+                              _saveFilterValues(filterValues);
+
                               print(filterValues);
                             });
                           }
@@ -129,7 +177,61 @@ class _BrowseLockersState extends State<BrowseLockers> {
 
                   /*  
                       Returns the Blocbuilder for the lockers
-                    */
+                  */
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        Chip(
+                          avatar: const Icon(Icons.calendar_today, size: 18),
+                          label: Text(
+                            "AY ${filterValues['academic_year']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                          backgroundColor: Colors.blue.shade50,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: Colors.blue.shade200),
+                          ),
+                        ),
+                        Chip(
+                          avatar: const Icon(Icons.school, size: 18),
+                          label: Text(
+                            filterValues['semester'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                          backgroundColor: Colors.green.shade50,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: Colors.green.shade200),
+                          ),
+                        ),
+                        Chip(
+                          avatar: const Icon(Icons.apartment, size: 18),
+                          label: Text(
+                            filterValues['building_name'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                          backgroundColor: Colors.yellow.shade50,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: Colors.yellow.shade200),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Expanded(
                     child: BlocBuilder<LockerCubit, LockerState>(
                       builder: (context, state) {

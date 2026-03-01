@@ -1,6 +1,8 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/lockers/domain/entities/building_entity.dart';
+import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_state.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/widgets/browse_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -85,14 +87,28 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
             const SizedBox(height: 12),
 
             /// Building (Optional)
-            CustomDropdown<BuildingEntity>(
-              hintText: 'Buildings',
-              items: buildings,
-              initialItem: selectedBuilding,
-              onChanged: (value) {
-                setState(() {
-                  selectedBuilding = value;
-                });
+            BlocBuilder<LockerCubit, LockerState>(
+              builder: (context, state) {
+                final lockers = state.lockers;
+                final Map<int, BuildingEntity> uniqueBuildings = {};
+
+                for (var locker in lockers) {
+                  final BuildingEntity building = locker.building;
+                  uniqueBuildings[building.id] = building;
+                }
+
+                final buildingsList = uniqueBuildings.values.toList();
+
+                return CustomDropdown<BuildingEntity>(
+                  hintText: 'Buildings',
+                  items: buildingsList,
+                  initialItem: selectedBuilding,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedBuilding = value;
+                    });
+                  },
+                );
               },
             ),
           ],
@@ -129,6 +145,8 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
               "academic_year": selectedYear,
               "building": selectedBuilding?.id,
               "semester": selectedSemester,
+              // Additional Field for more clarity
+              "building_name": selectedBuilding?.name,
             });
           },
           stateOnSubmit: Text("Apply"),
