@@ -36,14 +36,12 @@ class _BrowseLockersState extends State<BrowseLockers> {
     super.initState();
     _loadFilterValues();
 
-    // context.read<LockerCubit>().loadLockers();
-
     _scrollController.addListener(() {
       final cubit = context.read<LockerCubit>();
 
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
-        if (!cubit.state.isFiltered) {
+        if (!cubit.state.isFiltered && !cubit.state.hasReachedMax) {
           cubit.loadLockers();
         }
       }
@@ -83,16 +81,20 @@ class _BrowseLockersState extends State<BrowseLockers> {
         "building": 0,
         "semester": "",
         "building_name": "",
-        ...map, // override defaults
+        ...map,
       };
     });
 
+    final cubit = context.read<LockerCubit>();
+
     if (map.isNotEmpty && map["academic_year"] != "" && map["semester"] != "") {
-      context.read<LockerCubit>().loadAvailableLockers(
+      cubit.loadAvailableLockers(
         academicYear: map["academic_year"],
         building: map["building"],
         semester: map["semester"],
       );
+    } else {
+      cubit.loadLockers();
     }
   }
 
@@ -217,7 +219,7 @@ class _BrowseLockersState extends State<BrowseLockers> {
                         Chip(
                           avatar: const Icon(Icons.apartment, size: 18),
                           label: Text(
-                            filterValues['building_name'],
+                            filterValues['building_name'] ?? '---',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.3,

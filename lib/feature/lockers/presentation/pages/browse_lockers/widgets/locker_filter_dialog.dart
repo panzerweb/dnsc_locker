@@ -23,21 +23,6 @@ class _LockerFilterDialogState extends State<LockerFilterDialog> {
 
   final academicYears = ["2023-2024", "2024-2025", "2025-2026", "2026-2027"];
   final semesters = ["1st", "2nd"];
-  // Fetch buildings from API
-  final buildings = [
-    BuildingEntity(
-      id: 1,
-      schoolName: "Davao del Norte State College",
-      name: "IC Building",
-      maxFloor: 2,
-    ),
-    BuildingEntity(
-      id: 6,
-      schoolName: "Davao del Norte State College",
-      name: "ITED Building",
-      maxFloor: 2,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 class LockerSubscriptionRequestResponseEntity {
-  final int lockerId;
-  final String academicYear;
-  final String semester;
+  final int? lockerId;
+  final String? academicYear;
+  final String? semester;
 
   LockerSubscriptionRequestResponseEntity({
     required this.lockerId,

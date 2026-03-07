@@ -2,6 +2,8 @@ import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/auth/domain/entities/user_entity.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/request_locker_cubit.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/request_locker_state.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/sub_details_tile.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/subscription_button.dart';
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
@@ -20,253 +22,277 @@ class RentingForm extends StatefulWidget {
 
 class _RentingFormState extends State<RentingForm> {
   final _formKey = GlobalKey<FormState>();
+  int locker = 0;
   String academicYear = '';
   String semesterValue = '';
-  final bool _isSubmitting = false;
 
   @override
   void initState() {
+    super.initState();
+    locker = widget.locker.id;
     academicYear = widget.filters['academic_year'];
     semesterValue = widget.filters['semester'];
-
-    super.initState();
   }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    final payload = {
-      "locker": widget.locker.id, // important for API
-      "acedemic_year": academicYear,
-      "semester": semesterValue,
-    };
+    final lockerId = locker;
+    final academic_year = academicYear;
+    final semester = semesterValue;
+    print("POST Payload → $lockerId | $academic_year | $semester");
 
-    print("POST Payload → $payload");
-
-    // 👉 Call Bloc / API here
-    // context.read<RentCubit>().rentLocker(payload);
-
-    Toastify.show(
-      context,
-      message: 'Request submitted successfully. Please wait for approval.',
-      type: ToastType.success,
-      position: ToastPosition.bottom,
-      style: ToastStyle.banner,
-      leading: const Icon(Icons.check_circle, color: Colors.white),
+    // Call Bloc / API here
+    context.read<RequestLockerCubit>().submitLockerRequest(
+      lockerId,
+      academic_year,
+      semester,
     );
-
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SubDetailsTile(
-              leading: Icon(Icons.dns),
-              title: 'Locker No.',
-              subtitle: widget.locker.lockerNumber,
-            ),
-            SubDetailsTile(
-              leading: Icon(Icons.apartment),
-              title: 'Location',
-              subtitle:
-                  "${widget.locker.building.name} - Floor ${widget.locker.floor}",
-            ),
-            SubDetailsTile(
-              leading: Icon(Icons.info),
-              title: 'Condition',
-              subtitle: widget.locker.isActive == true
-                  ? 'Available'
-                  : 'Unavailable',
-            ),
+      child: BlocConsumer<RequestLockerCubit, RequestLockerState>(
+        listener: (context, state) {
+          if (state is RequestLockerSent) {
+            Toastify.show(
+              context,
+              message:
+                  'Request submitted successfully. Please wait for approval.',
+              type: ToastType.success,
+              position: ToastPosition.bottom,
+              style: ToastStyle.banner,
+              leading: const Icon(Icons.check_circle, color: Colors.white),
+            );
 
-            const SizedBox(height: 16),
+            Navigator.pop(context);
+          } else if (state is RequestLockerError) {
+            Toastify.show(
+              context,
+              message: state.message,
+              type: ToastType.error,
+              position: ToastPosition.bottom,
+              style: ToastStyle.banner,
+              leading: const Icon(Icons.error, color: Colors.white),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SubDetailsTile(
+                  leading: Icon(Icons.dns),
+                  title: 'Locker No.',
+                  subtitle: widget.locker.lockerNumber,
+                ),
+                SubDetailsTile(
+                  leading: Icon(Icons.apartment),
+                  title: 'Location',
+                  subtitle:
+                      "${widget.locker.building.name} - Floor ${widget.locker.floor}",
+                ),
+                SubDetailsTile(
+                  leading: Icon(Icons.info),
+                  title: 'Condition',
+                  subtitle: widget.locker.isActive == true
+                      ? 'Available'
+                      : 'Unavailable',
+                ),
 
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    "Review your details below",
-                    style: TextStyle(
-                      color: Palette.darkShadePrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    "Your personal details are already included once you submit a request",
-                    style: TextStyle(color: Palette.darkShadeSecondary),
-                  ),
-                  Divider(color: Palette.darkShadeSecondary, thickness: 2),
+                const SizedBox(height: 16),
 
-                  const SizedBox(height: 8),
+                Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Review your details below",
+                        style: TextStyle(
+                          color: Palette.darkShadePrimary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        "Your personal details are already included once you submit a request",
+                        style: TextStyle(color: Palette.darkShadeSecondary),
+                      ),
+                      Divider(color: Palette.darkShadeSecondary, thickness: 2),
 
-                  BlocBuilder<AuthCubit, AuthState>(
-                    builder: (context, state) {
-                      if (state is AuthLoading) {
-                        return const CircularProgressIndicator(
-                          color: Palette.accentColor,
-                        );
-                      }
+                      const SizedBox(height: 8),
 
-                      if (state is AuthenticatedUserLoaded) {
-                        final UserEntity user = state.user;
-                        // Handling of user details
-                        final String? firstName = user.student?.firstName;
-                        final String? lastName = user.student?.lastName;
-                        final String? suffixName = user.student?.suffix;
-                        final String? studentId =
-                            user.student?.studentId ?? 'Not Set';
-                        final String? studentProgram =
-                            user.student?.programName;
-                        final String? studentYear = user.student?.studentLevel
-                            .toString();
-                        final String? studentSet = user.student?.studentSet;
-
-                        final studentNameParts =
-                            [firstName, lastName, suffixName]
-                                .where(
-                                  (name) =>
-                                      name != null && name.trim().isNotEmpty,
-                                )
-                                .toList();
-                        final studentDetailPart =
-                            [studentProgram, studentYear, studentSet].where(
-                              (detail) =>
-                                  detail != null && detail.trim().isNotEmpty,
+                      BlocBuilder<AuthCubit, AuthState>(
+                        builder: (context, state) {
+                          if (state is AuthLoading) {
+                            return const CircularProgressIndicator(
+                              color: Palette.accentColor,
                             );
+                          }
 
-                        final fullName = studentNameParts.isEmpty
-                            ? "Not Set"
-                            : studentNameParts.join(" ");
+                          if (state is AuthenticatedUserLoaded) {
+                            final UserEntity user = state.user;
+                            // Handling of user details
+                            final String? firstName = user.student?.firstName;
+                            final String? lastName = user.student?.lastName;
+                            final String? suffixName = user.student?.suffix;
+                            final String? studentId =
+                                user.student?.studentId ?? 'Not Set';
+                            final String? studentProgram =
+                                user.student?.programName;
+                            final String? studentYear = user
+                                .student
+                                ?.studentLevel
+                                .toString();
+                            final String? studentSet = user.student?.studentSet;
 
-                        final studentProgramYearLevel =
-                            studentDetailPart.isEmpty
-                            ? "Not Set"
-                            : studentDetailPart.join(" ");
+                            final studentNameParts =
+                                [firstName, lastName, suffixName]
+                                    .where(
+                                      (name) =>
+                                          name != null &&
+                                          name.trim().isNotEmpty,
+                                    )
+                                    .toList();
+                            final studentDetailPart =
+                                [studentProgram, studentYear, studentSet].where(
+                                  (detail) =>
+                                      detail != null &&
+                                      detail.trim().isNotEmpty,
+                                );
 
-                        // User Interface
-                        return Padding(
-                          padding: EdgeInsetsGeometry.fromLTRB(8, 0, 8, 0),
-                          child: Column(
-                            spacing: 4,
-                            children: [
-                              ListTile(
-                                leading: Icon(Icons.person),
-                                title: Text(
-                                  "Full Name",
-                                  style: TextStyle(
-                                    color: Palette.darkShadePrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  fullName,
-                                  style: TextStyle(
-                                    color: Palette.darkShadeSecondary,
-                                  ),
-                                ),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.card_membership),
-                                title: Text(
-                                  "Student ID",
-                                  style: TextStyle(
-                                    color: Palette.darkShadePrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  "$studentId",
-                                  style: TextStyle(
-                                    color: Palette.darkShadeSecondary,
-                                  ),
-                                ),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.school_sharp),
-                                title: Text(
-                                  "Program/Year/Set",
-                                  style: TextStyle(
-                                    color: Palette.darkShadePrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  studentProgramYearLevel,
-                                  style: TextStyle(
-                                    color: Palette.darkShadeSecondary,
-                                  ),
-                                ),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.calendar_month),
-                                title: Text(
-                                  "Academic Year",
-                                  style: TextStyle(
-                                    color: Palette.darkShadePrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  academicYear,
-                                  style: TextStyle(
-                                    color: Palette.darkShadeSecondary,
-                                  ),
-                                ),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.timelapse_sharp),
-                                title: Text(
-                                  "Semester",
-                                  style: TextStyle(
-                                    color: Palette.darkShadePrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  semesterValue,
-                                  style: TextStyle(
-                                    color: Palette.darkShadeSecondary,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
+                            final fullName = studentNameParts.isEmpty
+                                ? "Not Set"
+                                : studentNameParts.join(" ");
 
-                      return const SizedBox.shrink();
-                    },
+                            final studentProgramYearLevel =
+                                studentDetailPart.isEmpty
+                                ? "Not Set"
+                                : studentDetailPart.join(" ");
+
+                            // User Interface
+                            return Padding(
+                              padding: EdgeInsetsGeometry.fromLTRB(8, 0, 8, 0),
+                              child: Column(
+                                spacing: 4,
+                                children: [
+                                  ListTile(
+                                    leading: Icon(Icons.person),
+                                    title: Text(
+                                      "Full Name",
+                                      style: TextStyle(
+                                        color: Palette.darkShadePrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      fullName,
+                                      style: TextStyle(
+                                        color: Palette.darkShadeSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.card_membership),
+                                    title: Text(
+                                      "Student ID",
+                                      style: TextStyle(
+                                        color: Palette.darkShadePrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      "$studentId",
+                                      style: TextStyle(
+                                        color: Palette.darkShadeSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.school_sharp),
+                                    title: Text(
+                                      "Program/Year/Set",
+                                      style: TextStyle(
+                                        color: Palette.darkShadePrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      studentProgramYearLevel,
+                                      style: TextStyle(
+                                        color: Palette.darkShadeSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.calendar_month),
+                                    title: Text(
+                                      "Academic Year",
+                                      style: TextStyle(
+                                        color: Palette.darkShadePrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      academicYear,
+                                      style: TextStyle(
+                                        color: Palette.darkShadeSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.timelapse_sharp),
+                                    title: Text(
+                                      "Semester",
+                                      style: TextStyle(
+                                        color: Palette.darkShadePrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      semesterValue,
+                                      style: TextStyle(
+                                        color: Palette.darkShadeSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return const SizedBox.shrink();
+                        },
+                      ),
+
+                      Divider(color: Palette.darkShadeSecondary, thickness: 2),
+                    ],
                   ),
+                ),
 
-                  Divider(color: Palette.darkShadeSecondary, thickness: 2),
-                ],
-              ),
+                const SizedBox(height: 24),
+
+                /// Submit Button
+                SubscriptionButton(
+                  onSubmitButton: state is RequestLockerLoading
+                      ? null
+                      : _submit,
+                  stateOnSubmit: state is RequestLockerLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("Confirm Renting"),
+                ),
+              ],
             ),
-
-            const SizedBox(height: 24),
-
-            /// Submit Button
-            SubscriptionButton(
-              onSubmitButton: _isSubmitting ? null : _submit,
-              stateOnSubmit: _isSubmitting
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("Confirm Renting"),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

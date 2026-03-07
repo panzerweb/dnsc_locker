@@ -3,9 +3,9 @@
 */
 
 class LockerSubscriptionRequestCreateEntity {
-  final int lockerId;
-  final String academicYear;
-  final String semester;
+  final int? lockerId;
+  final String? academicYear;
+  final String? semester;
 
   LockerSubscriptionRequestCreateEntity({
     required this.lockerId,

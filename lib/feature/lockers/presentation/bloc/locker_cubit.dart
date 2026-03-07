@@ -16,12 +16,12 @@ class LockerCubit extends Cubit<LockerState> {
     if (state.isLoading || state.hasReachedMax) {
       return;
     }
-    print("LOAD LOCKERS CALLED");
 
     emit(state.copyWith(isLoading: true));
 
     try {
       final response = await getLockersUseCase(page: state.currentPage);
+      print("Loaded all lockers: ${response.data.length}");
 
       final isLastPage = response.currentPage >= response.totalPages;
 
@@ -32,6 +32,7 @@ class LockerCubit extends Cubit<LockerState> {
           hasReachedMax: isLastPage,
           isLoading: false,
           errors: null,
+          isFiltered: false,
         ),
       );
     } catch (e, stack) {
@@ -46,8 +47,6 @@ class LockerCubit extends Cubit<LockerState> {
     int? building,
     required String semester,
   }) async {
-    print("AVAILABLE LOCKERS CALLED");
-
     emit(state.copyWith(errors: null, isLoading: true));
 
     try {
@@ -56,6 +55,7 @@ class LockerCubit extends Cubit<LockerState> {
         building: building,
         semester: semester,
       );
+      print("Loaded available lockers: ${response.data.length}");
       if (response.data.isNotEmpty) {
         emit(
           state.copyWith(
@@ -68,7 +68,14 @@ class LockerCubit extends Cubit<LockerState> {
           ),
         );
       } else {
-        emit(state.copyWith(lockers: [], isLoading: false, errors: null));
+        emit(
+          state.copyWith(
+            lockers: [],
+            isLoading: false,
+            errors: null,
+            isFiltered: true,
+          ),
+        );
       }
     } catch (e, stack) {
       print("FILTER ERROR: $e");

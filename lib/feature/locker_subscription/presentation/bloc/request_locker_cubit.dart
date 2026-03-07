@@ -22,8 +22,13 @@ class RequestLockerCubit extends Cubit<RequestLockerState> {
       emit(RequestLockerSent());
     } on LockerRequestErrorState catch (e) {
       emit(RequestLockerError("Error submitting request: ${e.message}"));
-    } catch (_) {
-      emit(RequestLockerError('Unexpected error. Please try again.'));
+    } catch (e) {
+      print("Unexpected error: $e"); // log it
+      emit(
+        RequestLockerError(
+          'Unable to connect to server. Please check your internet connection.',
+        ),
+      );
     }
   }
 }

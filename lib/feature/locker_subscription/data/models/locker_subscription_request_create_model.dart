@@ -1,7 +1,7 @@
 class LockerSubscriptionRequestCreateModel {
-  final int lockerId;
-  final String academicYear;
-  final String semester;
+  final int? lockerId;
+  final String? academicYear;
+  final String? semester;
 
   LockerSubscriptionRequestCreateModel({
     required this.lockerId,
@@ -11,9 +11,9 @@ class LockerSubscriptionRequestCreateModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'locker': lockerId,
-      'academic_year': academicYear,
-      'semester': semester,
+      'locker': lockerId ?? 0,
+      'academic_year': academicYear ?? '',
+      'semester': semester ?? '',
     };
   }
 }
