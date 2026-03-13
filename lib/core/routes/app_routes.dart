@@ -3,7 +3,9 @@ import 'package:dnsc_locker/core/services/token_service.dart';
 import 'package:dnsc_locker/feature/auth/presentation/pages/login_page.dart';
 import 'package:dnsc_locker/feature/auth/presentation/pages/profile_page.dart';
 import 'package:dnsc_locker/feature/auth/presentation/pages/register_page.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/entities/active_locker_subscription_entity.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/pages/renting_screen_page.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/pages/requests_page.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/browse_lockers/browse_lockers.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/pages/dashboard_page.dart';
 import 'package:dnsc_locker/feature/reports/presentation/pages/issues_page.dart';
@@ -81,7 +83,11 @@ final GoRouter router = GoRouter(
             */
             GoRoute(
               path: 'current_subscription',
-              builder: (context, state) => SubscriptionPage(),
+              builder: (context, state) {
+                final subscribedLocker =
+                    state.extra as ActiveLockerSubscriptionEntity;
+                return SubscriptionPage(activeLocker: subscribedLocker);
+              },
             ),
             /*
               Submitting an issue regarding the locker
@@ -95,6 +101,14 @@ final GoRouter router = GoRouter(
               builder: (context, state) => SubmitIssuePage(),
             ),
             GoRoute(path: 'issues', builder: (context, state) => IssuesPage()),
+            /*
+              Going to the page where all requests of
+              subscriptions are listed by the user
+            */
+            GoRoute(
+              path: 'locker_requests',
+              builder: (context, state) => RequestsPage(),
+            ),
           ],
         ),
 

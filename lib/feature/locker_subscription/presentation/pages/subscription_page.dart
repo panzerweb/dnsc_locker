@@ -1,9 +1,13 @@
+import 'package:dnsc_locker/core/helper/format_date.dart';
 import 'package:dnsc_locker/core/styles/palette.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/entities/active_locker_subscription_entity.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/sub_details_tile.dart';
 import 'package:flutter/material.dart';
 
 class SubscriptionPage extends StatefulWidget {
-  const SubscriptionPage({super.key});
+  final ActiveLockerSubscriptionEntity activeLocker;
+
+  const SubscriptionPage({super.key, required this.activeLocker});
 
   @override
   State<SubscriptionPage> createState() => _SubscriptionPageState();
@@ -12,6 +16,10 @@ class SubscriptionPage extends StatefulWidget {
 class _SubscriptionPageState extends State<SubscriptionPage> {
   @override
   Widget build(BuildContext context) {
+    final String? activeFee = widget.activeLocker.fee?.balance;
+    final String? fullName = widget.activeLocker.student?.fullName;
+    final String paymentDue = widget.activeLocker.paymentDueAt;
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -43,18 +51,44 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
                   */
                   Text(
-                    'Locker No. 245',
+                    'Locker No. ${widget.activeLocker.locker?.lockerNumber}',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Palette.lightShadePrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    'IC Building • 2nd Floor',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Palette.lightShadeSecondary,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.apartment,
+                        size: 18,
+                        color: Palette.lightShadeSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${widget.activeLocker.locker?.building.name}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Palette.lightShadeSecondary,
+                        ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      Icon(
+                        Icons.layers,
+                        size: 18,
+                        color: Palette.lightShadeSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${widget.activeLocker.locker?.floor} Floor',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Palette.lightShadeSecondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -83,31 +117,33 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 const SizedBox(height: 8),
 
                 Column(
-                  children: const [
+                  children: [
                     SubDetailsTile(
                       leading: Icon(Icons.calendar_month),
                       title: 'Last Subscription',
-                      subtitle: 'January 16, 2026',
+                      subtitle: widget.activeLocker.subscribedAt,
                     ),
                     SubDetailsTile(
                       leading: Icon(Icons.info),
-                      title: 'Status',
-                      subtitle: 'Paid',
+                      title: 'Payment Status',
+                      subtitle: widget.activeLocker.paymentStatus == 'unpaid'
+                          ? 'Unpaid'
+                          : 'Paid',
                     ),
                     SubDetailsTile(
                       leading: Icon(Icons.attach_money),
                       title: 'Rental Fee',
-                      subtitle: 'Php 100.00',
+                      subtitle: activeFee ?? 'Not Set',
                     ),
                     SubDetailsTile(
                       leading: Icon(Icons.person),
                       title: 'Renter',
-                      subtitle: 'Romeo Selwyn Villar',
+                      subtitle: fullName ?? 'Not Set',
                     ),
                     SubDetailsTile(
-                      leading: Icon(Icons.people),
-                      title: 'Institute',
-                      subtitle: 'Institute of Computing',
+                      leading: Icon(Icons.calendar_month),
+                      title: 'Payment Due',
+                      subtitle: formatDate(paymentDue),
                     ),
                   ],
                 ),

@@ -1,14 +1,24 @@
 import 'package:dnsc_locker/core/styles/palette.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/entities/active_locker_subscription_entity.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/active_indicator_row.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/dashboard_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ActiveLockerCard extends StatelessWidget {
-  const ActiveLockerCard({super.key});
+  final ActiveLockerSubscriptionEntity activeLockerSubscriptionEntity;
+
+  const ActiveLockerCard({
+    super.key,
+    required this.activeLockerSubscriptionEntity,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final activeFee = activeLockerSubscriptionEntity.fee != null
+        ? activeLockerSubscriptionEntity.fee?.balance
+        : 'Not Set';
+
     return Card(
       elevation: 8,
       color: Palette.accentColor,
@@ -32,7 +42,10 @@ class ActiveLockerCard extends StatelessWidget {
                 /*
                   Pass the indicator such as status
                 */
-                ActiveIndicatorRow(),
+                ActiveIndicatorRow(
+                  status: activeLockerSubscriptionEntity.status,
+                  paymentStatus: activeLockerSubscriptionEntity.paymentStatus,
+                ),
               ],
             ),
 
@@ -42,7 +55,7 @@ class ActiveLockerCard extends StatelessWidget {
               Pass the locker number in this widget
             */
             Text(
-              "Locker 1",
+              "Locker ${activeLockerSubscriptionEntity.locker?.lockerNumber}",
               style: TextStyle(
                 color: Palette.lightShadePrimary,
                 fontSize: 48,
@@ -61,7 +74,7 @@ class ActiveLockerCard extends StatelessWidget {
               backgroundColor: Palette.darkGreenColor,
               shadowColor: Colors.black,
               label: Text(
-                "A.Y. 2025 - 2026 | 1st Semester",
+                "A.Y. ${activeLockerSubscriptionEntity.academicYear} | ${activeLockerSubscriptionEntity.semester} Semester",
                 style: TextStyle(color: Palette.lightShadeSecondary),
               ),
             ),
@@ -84,7 +97,7 @@ class ActiveLockerCard extends StatelessWidget {
                     Pass the balance here
                   */
                   TextSpan(
-                    text: '₱ 100.00',
+                    text: '$activeFee',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       color: Palette.lightShadeSecondary,
@@ -115,7 +128,10 @@ class ActiveLockerCard extends StatelessWidget {
                       child: DashboardButtons(
                         buttonPressed: () {
                           // Pass the id I think of the current_subscription
-                          context.push('/dashboard/current_subscription');
+                          context.push(
+                            '/dashboard/current_subscription/',
+                            extra: activeLockerSubscriptionEntity,
+                          );
                         },
                         backgroundColor: WidgetStatePropertyAll(
                           Palette.darkGreenColor,

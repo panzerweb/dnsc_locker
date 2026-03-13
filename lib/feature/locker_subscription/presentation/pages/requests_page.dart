@@ -1,3 +1,4 @@
+import 'package:dnsc_locker/core/components/pushed_appbar.dart';
 import 'package:flutter/material.dart';
 
 class RequestsPage extends StatelessWidget {
@@ -5,6 +6,9 @@ class RequestsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("Request Page here"));
+    return Scaffold(
+      appBar: PushedAppbar(title: 'Requests'),
+      body: Center(child: Text("Requests Page List")),
+    );
   }
 }

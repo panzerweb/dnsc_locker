@@ -1,6 +1,7 @@
 import 'package:dnsc_locker/core/routes/app_routes.dart';
 import 'package:dnsc_locker/core/services/service_locator.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/active_locker_cubit.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/request_locker_cubit.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/bloc/locker_cubit.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,9 @@ Future<void> main() async {
         BlocProvider<LockerCubit>(create: (_) => locator<LockerCubit>()),
         BlocProvider<RequestLockerCubit>(
           create: (_) => locator<RequestLockerCubit>(),
+        ),
+        BlocProvider<ActiveLockerCubit>(
+          create: (_) => locator<ActiveLockerCubit>(),
         ),
       ],
       child: const MyApp(),

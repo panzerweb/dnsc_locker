@@ -46,10 +46,12 @@ dependencies:
   animated_custom_dropdown: 3.1.1
   shared_preferences: ^2.5.4
   email_validator: '^2.1.17'
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mocktail: ^1.0.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -70,6 +70,7 @@ class _BrowseLockersState extends State<BrowseLockers> {
     await prefs.setString('filter_values', jsonString);
   }
 
+  // Will load the values from the local storage or shared preference
   Future<void> _loadFilterValues() async {
     final map = await _getFilterValuesMap();
 

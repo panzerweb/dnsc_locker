@@ -1,12 +1,15 @@
 import 'package:dnsc_locker/core/components/main_appbar.dart';
+import 'package:dnsc_locker/core/helper/current_academic_year.dart';
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_state.dart';
-import 'package:dnsc_locker/feature/lockers/presentation/widgets/active_indicator_row.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/entities/active_locker_subscription_entity.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/active_locker_cubit.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/active_locker_state.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/active_locker_card.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/auth_user_error.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/header_section.dart';
-import 'package:dnsc_locker/feature/lockers/presentation/widgets/related_detail_card.dart';
+import 'package:dnsc_locker/feature/lockers/presentation/widgets/no_active_locker_card.dart';
 import 'package:dnsc_locker/feature/lockers/presentation/widgets/services_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +23,13 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<ActiveLockerCubit>().loadActiveLockerSubscriptions();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +46,7 @@ class _DashboardPageState extends State<DashboardPage> {
               if (state is AuthenticatedUserLoaded) {
                 final user = state.user;
                 print("You loaded dashboard");
-                print(user);
+                // print(user);
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -58,7 +68,58 @@ class _DashboardPageState extends State<DashboardPage> {
                       Update: Will show the total balance, what locker is
         
                     */
-                    ActiveLockerCard(),
+                    BlocBuilder<ActiveLockerCubit, ActiveLockerState>(
+                      builder: (context, state) {
+                        if (state is ActiveLockerLoading) {
+                          return Center(
+                            child: const CircularProgressIndicator(),
+                          );
+                        }
+
+                        if (state is ActiveLockerLoaded) {
+                          final ActiveLockerSubscriptionEntity? latest =
+                              state.latestSubscription;
+                          final String currentAcademicYear = getAcademicYear();
+
+                          if (latest == null) {
+                            return Center(
+                              child: Text(
+                                "No Active Locker Subscription",
+                                style: TextStyle(
+                                  color: Palette.darkShadePrimary,
+                                  fontSize: 22,
+                                ),
+                              ),
+                            );
+                          }
+
+                          if (latest.academicYear != currentAcademicYear) {
+                            return NoActiveLockerCard(
+                              activeLockerSubscriptionEntity: latest,
+                            );
+                          }
+
+                          return ActiveLockerCard(
+                            activeLockerSubscriptionEntity: latest,
+                          );
+                        }
+
+                        if (state is ActiveLockerError) {
+                          print(state.message);
+                          return Center(
+                            child: Text(
+                              state.message,
+                              style: TextStyle(
+                                color: Palette.darkShadePrimary,
+                                fontSize: 22,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return const SizedBox();
+                      },
+                    ),
 
                     const SizedBox(height: 14),
 
@@ -116,7 +177,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           label: "Requests",
                           icon: Icons.file_upload,
                           onTapped: () {
-                            print("Go to Request Service");
+                            context.push('/dashboard/locker_requests/');
                           },
                         ),
                         ServicesCard(

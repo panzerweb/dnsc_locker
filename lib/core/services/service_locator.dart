@@ -9,11 +9,17 @@ import 'package:dnsc_locker/feature/auth/domain/usecases/login_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/logout_use_case.dart';
 import 'package:dnsc_locker/feature/auth/domain/usecases/register_use_case.dart';
 import 'package:dnsc_locker/feature/auth/presentation/bloc/auth_cubit.dart';
+import 'package:dnsc_locker/feature/locker_subscription/data/data_sources/active_subscription_data_source.dart';
+import 'package:dnsc_locker/feature/locker_subscription/data/data_sources/active_subscription_data_source_impl.dart';
 import 'package:dnsc_locker/feature/locker_subscription/data/data_sources/locker_subscription_request_data_source.dart';
 import 'package:dnsc_locker/feature/locker_subscription/data/data_sources/locker_subscription_request_data_source_impl.dart';
+import 'package:dnsc_locker/feature/locker_subscription/data/repositories/active_locker_subscription_repository_impl.dart';
 import 'package:dnsc_locker/feature/locker_subscription/data/repositories/locker_subscription_request_repository_impl.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/repository/active_locker_subscription_repository.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/repository/locker_subscription_request_repository.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/usecases/active_subscriptions_use_case.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/usecases/request_locker_use_case.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/active_locker_cubit.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/request_locker_cubit.dart';
 import 'package:dnsc_locker/feature/lockers/data/data_sources/lockers_remote_data_source.dart';
 import 'package:dnsc_locker/feature/lockers/data/data_sources/lockers_remote_data_source_impl.dart';
@@ -146,5 +152,25 @@ void setupLocator() {
   );
   locator.registerFactory(
     () => RequestLockerCubit(requestLockerUseCase: locator()),
+  );
+
+  /*
+    Active Locker Subscription Registry
+  */
+  locator.registerLazySingleton<ActiveSubscriptionDataSource>(
+    () => ActiveSubscriptionDataSourceImpl(locator<Dio>()),
+  );
+  locator.registerLazySingleton<ActiveLockerSubscriptionRepository>(
+    () => ActiveLockerSubscriptionRepositoryImpl(
+      locator<ActiveSubscriptionDataSource>(),
+    ),
+  );
+  locator.registerLazySingleton(
+    () => ActiveSubscriptionsUseCase(
+      locator<ActiveLockerSubscriptionRepository>(),
+    ),
+  );
+  locator.registerFactory(
+    () => ActiveLockerCubit(activeSubscriptionsUseCase: locator()),
   );
 }
