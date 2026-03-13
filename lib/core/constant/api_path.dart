@@ -25,6 +25,7 @@ class ApiPath {
 
   // Locker subscription request endpoints
   static const requestLocker = 'api/v1/locker-subscription-requests/';
+  static const getSubmissions = 'api/v1/locker-subscription-requests/';
 
   // Report issues endpoints
 }

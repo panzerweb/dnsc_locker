@@ -1,10 +1,11 @@
+import 'package:dnsc_locker/core/constant/simplified_student_model.dart';
 import 'package:dnsc_locker/feature/auth/data/models/student_model.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/entities/locker_subscription_request_entity.dart';
 import 'package:dnsc_locker/feature/lockers/data/models/locker_models.dart';
 
 class LockerSubscriptionRequestModel {
   final int id;
-  final StudentModel? student;
+  final SimplifiedStudentModel? student;
   final LockerModels? locker;
   final String academicYear;
   final String semester;
@@ -23,7 +24,7 @@ class LockerSubscriptionRequestModel {
     return LockerSubscriptionRequestModel(
       id: json['id'],
       student: json['student'] != null
-          ? StudentModel.fromJson(json['student'])
+          ? SimplifiedStudentModel.fromJson(json['student'])
           : null,
       locker: json['locker'] != null
           ? LockerModels.fromJson(json['locker'])

@@ -180,13 +180,6 @@ class _DashboardPageState extends State<DashboardPage> {
                             context.push('/dashboard/locker_requests/');
                           },
                         ),
-                        ServicesCard(
-                          label: "Portal",
-                          icon: Icons.person_4_rounded,
-                          onTapped: () {
-                            print("Go to Student Portal");
-                          },
-                        ),
                       ],
                     ),
                   ],

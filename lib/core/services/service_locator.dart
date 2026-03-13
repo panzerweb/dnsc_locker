@@ -18,6 +18,7 @@ import 'package:dnsc_locker/feature/locker_subscription/data/repositories/locker
 import 'package:dnsc_locker/feature/locker_subscription/domain/repository/active_locker_subscription_repository.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/repository/locker_subscription_request_repository.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/usecases/active_subscriptions_use_case.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/usecases/get_all_submissions_use_case.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/usecases/request_locker_use_case.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/active_locker_cubit.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/request_locker_cubit.dart';
@@ -150,8 +151,16 @@ void setupLocator() {
   locator.registerLazySingleton(
     () => RequestLockerUseCase(locator<LockerSubscriptionRequestRepository>()),
   );
+  locator.registerLazySingleton(
+    () => GetAllSubmissionsUseCase(
+      locator<LockerSubscriptionRequestRepository>(),
+    ),
+  );
   locator.registerFactory(
-    () => RequestLockerCubit(requestLockerUseCase: locator()),
+    () => RequestLockerCubit(
+      requestLockerUseCase: locator(),
+      getAllSubmissionsUseCase: locator(),
+    ),
   );
 
   /*

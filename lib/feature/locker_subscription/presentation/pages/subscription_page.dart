@@ -159,7 +159,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: go to a request page for requesting a change
+                  print("Go to Request Change Form");
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Palette.secondaryColor,

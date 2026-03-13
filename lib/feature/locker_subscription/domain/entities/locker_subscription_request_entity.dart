@@ -1,3 +1,4 @@
+import 'package:dnsc_locker/core/constant/simplified_student_entity.dart';
 import 'package:dnsc_locker/feature/auth/domain/entities/student_entity.dart';
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 
@@ -6,7 +7,7 @@ import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 */
 class LockerSubscriptionRequestEntity {
   final int id;
-  final StudentEntity? student;
+  final SimplifiedStudentEntity? student;
   final LockerEntity? locker;
   final String academicYear;
   final String semester;

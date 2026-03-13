@@ -1,6 +1,8 @@
+import 'package:dnsc_locker/core/constant/api_response_entity.dart';
 import 'package:dnsc_locker/core/errors/locker_request_error_state.dart';
 import 'package:dnsc_locker/feature/locker_subscription/data/data_sources/locker_subscription_request_data_source.dart';
 import 'package:dnsc_locker/feature/locker_subscription/data/models/locker_subscription_request_create_model.dart';
+import 'package:dnsc_locker/feature/locker_subscription/domain/entities/locker_subscription_request_entity.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/entities/locker_subscription_request_response_entity.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/repository/locker_subscription_request_repository.dart';
 
@@ -16,18 +18,27 @@ class LockerSubscriptionRequestRepositoryImpl
     String academicYear,
     String semester,
   ) async {
-    try {
-      final requestModel = LockerSubscriptionRequestCreateModel(
-        lockerId: lockerId,
-        academicYear: academicYear,
-        semester: semester,
-      );
+    final requestModel = LockerSubscriptionRequestCreateModel(
+      lockerId: lockerId,
+      academicYear: academicYear,
+      semester: semester,
+    );
 
-      final response = await dataSource.requestLockerSubscription(requestModel);
+    final response = await dataSource.requestLockerSubscription(requestModel);
 
-      return response.toEntity();
-    } catch (e) {
-      throw Exception("Repository Error $e");
-    }
+    return response.toEntity();
+  }
+
+  @override
+  Future<ApiResponseEntity<LockerSubscriptionRequestEntity>> getAllSubmissions({
+    required int currentPage,
+  }) async {
+    final submissionsModel = await dataSource.getAllLockerRequestSubmission(
+      currentPage: currentPage,
+    );
+    final submissionsEntity = submissionsModel.toEntity(
+      (model) => model.toEntity(),
+    );
+    return submissionsEntity;
   }
 }
