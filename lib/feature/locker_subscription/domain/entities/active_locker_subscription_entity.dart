@@ -1,10 +1,10 @@
+import 'package:dnsc_locker/core/constant/simplified_student_entity.dart';
 import 'package:dnsc_locker/feature/locker_subscription/domain/entities/fee_entity.dart';
-import 'package:dnsc_locker/feature/locker_subscription/domain/entities/subscribed_student_entity.dart';
 import 'package:dnsc_locker/feature/lockers/domain/entities/locker_entity.dart';
 
 class ActiveLockerSubscriptionEntity {
   final int id;
-  final SubscribedStudentEntity? student;
+  final SimplifiedStudentEntity? student;
   final LockerEntity? locker;
 
   final String? subscriptionRequest;

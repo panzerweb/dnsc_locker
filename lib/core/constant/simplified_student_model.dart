@@ -1,13 +1,13 @@
-import 'package:dnsc_locker/feature/locker_subscription/domain/entities/subscribed_student_entity.dart';
+import 'package:dnsc_locker/core/constant/simplified_student_entity.dart';
 
-class SubscribedStudentModel {
+class SimplifiedStudentModel {
   final int id;
   final String fullName;
   final String programName;
   final String studentSet;
   final int studentLevel;
 
-  SubscribedStudentModel({
+  SimplifiedStudentModel({
     required this.id,
     required this.fullName,
     required this.programName,
@@ -15,8 +15,8 @@ class SubscribedStudentModel {
     required this.studentLevel,
   });
 
-  factory SubscribedStudentModel.fromJson(Map<String, dynamic> json) {
-    return SubscribedStudentModel(
+  factory SimplifiedStudentModel.fromJson(Map<String, dynamic> json) {
+    return SimplifiedStudentModel(
       id: json['id'],
       fullName: json['full_name'],
       programName: json['program_name'],
@@ -25,8 +25,8 @@ class SubscribedStudentModel {
     );
   }
 
-  SubscribedStudentEntity toEntity() {
-    return SubscribedStudentEntity(
+  SimplifiedStudentEntity toEntity() {
+    return SimplifiedStudentEntity(
       id: id,
       fullName: fullName,
       programName: programName,
