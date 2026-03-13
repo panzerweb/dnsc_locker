@@ -2,6 +2,7 @@ import 'package:dnsc_locker/core/components/pushed_appbar.dart';
 import 'package:dnsc_locker/core/styles/palette.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/request_locker_cubit.dart';
 import 'package:dnsc_locker/feature/locker_subscription/presentation/bloc/request_locker_state.dart';
+import 'package:dnsc_locker/feature/locker_subscription/presentation/widgets/requests_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -60,7 +61,7 @@ class _RequestsPageState extends State<RequestsPage> {
                   // Initial or loading state
                   if (state is RequestLockerInitial ||
                       state is RequestLockerLoading &&
-                          !(state is RequestLockersLoaded)) {
+                          state is! RequestLockersLoaded) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
@@ -99,23 +100,13 @@ class _RequestsPageState extends State<RequestsPage> {
                         }
 
                         final request = requests[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: ListTile(
-                            leading: const Icon(Icons.lock_outline),
-                            title: Text(
-                              "Locker ID: ${request.locker?.lockerNumber ?? 'N/A'}",
-                            ),
-                            subtitle: Text(
-                              "${request.academicYear} - ${request.semester}",
-                            ),
-                            trailing: Text(
-                              request.status ?? "Pending",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+
+                        return RequestsListTile(
+                          index: index + 1,
+                          requestEntity: request,
+                          onDelete: () {
+                            print("Delete submission test");
+                          },
                         );
                       },
                     );

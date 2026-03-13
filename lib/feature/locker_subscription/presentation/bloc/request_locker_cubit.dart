@@ -54,24 +54,37 @@ class RequestLockerCubit extends Cubit<RequestLockerState> {
       _hasReachedMax = _currentPage >= responseData.totalPages;
       _currentPage += 1;
 
+      // Always prioritized approved request to be on the top
+      final sortedRequest = List.of(requests)
+        ..sort((a, b) {
+          int getPriority(String status) {
+            switch (status.toLowerCase()) {
+              case 'approved':
+                return 0; // highest priority
+              case 'pending':
+                return 1;
+              case 'rejected':
+                return 2;
+              default:
+                return 3;
+            }
+          }
+
+          return getPriority(a.status).compareTo(getPriority(b.status));
+        });
       emit(
         RequestLockersLoaded(
           currentPage: _currentPage - 1, // current page just fetched
           perPage: responseData.perPage,
           totalPages: responseData.totalPages,
           totalItems: responseData.totalItems,
-          requests: List.of(requests).toList(), // pass a copy
+          requests: sortedRequest, // pass a copy
         ),
       );
     } on LockerRequestErrorState catch (e) {
       emit(RequestLockerError("Error fetching request: ${e.message}"));
     } catch (e) {
-      print("Unexpected error: $e"); // log it
-      emit(
-        RequestLockerError(
-          'Unable to connect to server. Please check your internet connection.',
-        ),
-      );
+      emit(RequestLockerError("Unexpected error: $e"));
     }
   }
 }
